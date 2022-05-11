@@ -12,10 +12,10 @@ public class Reservation {
     LocalDate date;
     LocalTime startTime;
     LocalTime endTime;
-    boolean isReserved;
+    boolean isAvailable;
 
     @ManyToOne
-    Table table;
+    TableToReserve table;
 
     @ManyToOne
     User user;
@@ -23,11 +23,11 @@ public class Reservation {
     public Reservation() {
     }
 
-    public Reservation(LocalDate date, LocalTime startTime, LocalTime endTime, Table table) {
+    public Reservation(LocalDate date, LocalTime startTime, LocalTime endTime, TableToReserve table) {
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
-        isReserved = false;
+        isAvailable = true;
         this.table = table;
     }
 
@@ -63,20 +63,20 @@ public class Reservation {
         this.endTime = endTime;
     }
 
-    public boolean isReserved() {
-        return isReserved;
+    public boolean isAvailable() {
+        return isAvailable;
     }
 
-    public void setReserved(boolean reserved) {
-        isReserved = reserved;
+    public void setAvailable(boolean available) {
+        isAvailable = available;
     }
 
-    public Table getTable() {
+    public TableToReserve getTable() {
         return table;
     }
 
-    public void setTable(Table table) {
-        this.table = table;
+    public void setTable(TableToReserve tableToReserve) {
+        this.table = tableToReserve;
     }
 
     public User getUser() {

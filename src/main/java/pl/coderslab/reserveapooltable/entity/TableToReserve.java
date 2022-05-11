@@ -1,22 +1,19 @@
 package pl.coderslab.reserveapooltable.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
-public class Table {
+public class TableToReserve {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     int tableNumber;
 
-    public Table() {
+    public TableToReserve() {
     }
 
-    public Table(int tableNumber) {
+    public TableToReserve(int tableNumber) {
         this.tableNumber = tableNumber;
     }
 
