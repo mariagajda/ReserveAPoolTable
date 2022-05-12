@@ -1,10 +1,10 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
+<!DOCTYPE html>
+<html lang="pl">
 <head>
     <title>Reserve a Service</title>
-
 </head>
 <body>
 <h1>Reserve a Service</h1>
@@ -15,51 +15,43 @@
     <input type=submit value="Check availability"/>
 </form>
 
-
-<h3>Available hours & tables:</h3>
-<table>
-    <%--    <thead>--%>
-    <%--    <tr>--%>
-    <%--        <c:forEach items="${tables}" var="table">--%>
-    <%--            <th><p>Table No.</p>--%>
-    <%--                <p>${table.tableNumber}</p></th>--%>
-    <%--        </c:forEach>--%>
-    <%--    </tr>--%>
-    <%--    </thead>--%>
-    <tbody>
-    <c:forEach items="${tables}" var="table">
-        <c:set var="tableNumber" value="${table.tableNumber}"></c:set>
+<form action="/datetablesandhours" method="get">
+    <h3>Available hours & tables:</h3>
+    <table>
+        <tbody>
+        <c:forEach items="${tables}" var="table">
+            <c:set var="tableNumber" value="${table.tableNumber}"></c:set>
         <tr>
             <th>
                 Table No.${table.tableNumber}:
             </th>
+
             <c:forEach items="${reservations}" var="reservation">
                 <c:set var="tableNumberFromReservation" value="${reservation.table.tableNumber}"></c:set>
-
-                <c:if test="${tableNumber eq tableNumberFromReservation}">
-                    <c:choose>
-                        <c:when test="${reservation.isAvailable()}">
-                            <td style="background-color: lightgreen"> ${reservation.startTime} - ${reservation.endTime}
-                        </c:when>
-                        <c:otherwise>
-                            <td style="background-color: indianred"> ${reservation.startTime} - ${reservation.endTime}
-                        </c:otherwise>
-                    </c:choose>
-                    </td>
-                </c:if>
-
+            <c:if test="${tableNumber eq tableNumberFromReservation}">
+            <c:choose>
+            <c:when test="${reservation.isAvailable()}">
+            <td style="background-color: lightgreen"><input type="checkbox" name="pickedReservations"
+                                                            value="${reservation.id}"
+                                                            id="checkbox"/>${reservation.startTime}
+                - ${reservation.endTime}
+                </c:when>
+                <c:otherwise>
+            <td style="background-color: indianred">${reservation.startTime} - ${reservation.endTime}
+                </c:otherwise>
+                </c:choose>
+            </td>
+            </c:if>
             </c:forEach>
-        </tr>
-    </c:forEach>
-    </tbody>
+</form>
+</tr>
+</c:forEach>
+</tbody>
 </table>
 
-<div>
-    <h4>Your reservation details:</h4>
-    <p>Date: ${date}</p>
-    <p>Table: </p>
-    <p>Total Price: </p>
+<input type="submit" value="Confirm reservation"/>
 
-</div>
+</form>
 </body>
+<script type="text/javascript" src="<c:url value="/js/reservation-tables-and-hours.js"/>"></script>
 </html>

@@ -1,6 +1,7 @@
 package pl.coderslab.reserveapooltable.entity;
 
 import javax.persistence.*;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -13,6 +14,7 @@ public class Reservation {
     LocalTime startTime;
     LocalTime endTime;
     boolean isAvailable;
+    double price;
 
     @ManyToOne
     TableToReserve table;
@@ -29,6 +31,7 @@ public class Reservation {
         this.endTime = endTime;
         isAvailable = true;
         this.table = table;
+        countPrice();
     }
 
     public Long getId() {
@@ -85,5 +88,46 @@ public class Reservation {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public void countPrice(){
+        if(date.getDayOfWeek().equals(DayOfWeek.FRIDAY) && startTime.isBefore(LocalTime.of(18, 00))){
+            setPrice(Admin.fridayBefore18PricePerHour/2);
+        }
+        else if(date.getDayOfWeek().equals(DayOfWeek.FRIDAY) && startTime.isAfter(LocalTime.of(17, 59))){
+            setPrice(Admin.fridayAfter18PricePerHour/2);
+        }
+        else if(date.getDayOfWeek().equals(DayOfWeek.SATURDAY) && startTime.isBefore(LocalTime.of(18, 00))){
+            setPrice(Admin.saturdayBefore18PricePerHour/2);
+        }
+        else if(date.getDayOfWeek().equals(DayOfWeek.SATURDAY) && startTime.isAfter(LocalTime.of(17, 59))){
+            setPrice(Admin.saturdayAfter18PricePerHour/2);
+        }
+        else if(date.getDayOfWeek().equals(DayOfWeek.SUNDAY) && startTime.isBefore(LocalTime.of(18, 00))){
+            setPrice(Admin.sundayAndHolidaysBefore18PricePerHour/2);
+        }
+        else if(date.getDayOfWeek().equals(DayOfWeek.SUNDAY) && startTime.isAfter(LocalTime.of(17, 59))){
+            setPrice(Admin.sundayAndHolidaysAfter18PricePerHour/2);
+        }
+        else if(Admin.holidayDatesWorkdays.contains(date) && startTime.isBefore(LocalTime.of(18, 00))){
+            setPrice(Admin.sundayAndHolidaysBefore18PricePerHour/2);
+        }
+        else if(Admin.holidayDatesWorkdays.contains(date) && startTime.isAfter(LocalTime.of(17, 59))){
+            setPrice(Admin.sundayAndHolidaysAfter18PricePerHour/2);
+        }
+        else if(startTime.isBefore(LocalTime.of(18, 00))){
+            setPrice(Admin.mondayToThursdayBefore18PricePerHour);
+        }
+        else{
+            setPrice(Admin.mondayToThursdayAfter18PricePerHour);
+        }
     }
 }
