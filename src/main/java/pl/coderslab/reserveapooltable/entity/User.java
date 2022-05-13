@@ -18,6 +18,7 @@ public class User {
     String name;
     String email;
     String phoneNumber;
+    boolean usageAcceptance;
 
     @OneToMany
     List<Reservation> reservations;
@@ -61,6 +62,14 @@ public class User {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public boolean isUsageAcceptance() {
+        return usageAcceptance;
+    }
+
+    public void setUsageAcceptance(boolean usageAcceptance) {
+        this.usageAcceptance = usageAcceptance;
     }
 
     public List<Reservation> getReservations() {
