@@ -4,11 +4,11 @@ import javax.persistence.*;
 
 @Entity
 @DiscriminatorValue("registered")
-public class RegisteredUser extends User{
+public class RegisteredUser extends User {
 
-    String password;
-    double discount;
-    int reservationsCounter;
+    private String password;
+    private double discount;
+    private int reservationsCounter;
 
     public RegisteredUser() {
         discount = 0.0;

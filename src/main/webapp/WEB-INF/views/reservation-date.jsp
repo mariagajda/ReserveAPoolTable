@@ -19,26 +19,26 @@
     <thead>
     <tr>
         <th></th>
-        <th>Monday-Thursday</th>
-        <th>Friday</th>
-        <th>Saturday</th>
-        <th>Sunday and holidays<sup>*</sup></th>
+        <th>${monToThursdayBefore18.dayOfWeek}</th>
+        <th>${fridayBefore18.dayOfWeek}</th>
+        <th>${saturdayBefore18.dayOfWeek}</th>
+        <th>${sundayHolidaysBefore18.dayOfWeek}<sup>*</sup></th>
     </tr>
     </thead>
     <tbody>
     <tr>
-        <td>before 18:00</td>
-        <td>18 PLN/hour</td>
-        <td>18 PLN/hour</td>
-        <td>23 PLN/hour</td>
-        <td>23 PLN/hour</td>
+        <td>before ${monToThursdayBefore18.endTime}</td>
+        <td><c:out value="${monToThursdayBefore18.pricePerHour}"/> <a href=""</td>
+        <td><c:out value="${fridayBefore18.pricePerHour}"/></td>
+        <td><c:out value="${saturdayBefore18.pricePerHour}"/></td>
+        <td><c:out value="${sundayHolidaysBefore18.pricePerHour}"/></td>
     </tr>
     <tr>
-        <td>after 18:00</td>
-        <td>18 PLN/hour</td>
-        <td>18 PLN/hour</td>
-        <td>23 PLN/hour</td>
-        <td>23 PLN/hour</td>
+        <td>after ${monToThursdayAfter18.startTime}</td>
+        <td><c:out value="${monToThursdayAfter18.pricePerHour}"/> </td>
+        <td><c:out value="${fridayAfter18.pricePerHour}"/></td>
+        <td><c:out value="${saturdayAfter18.pricePerHour}"/></td>
+        <td><c:out value="${sundayHolidaysAfter18.pricePerHour}"/></td>
     </tr>
     </tbody>
 </table>

@@ -14,14 +14,14 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-    String name;
-    String email;
-    String phoneNumber;
-    boolean usageAcceptance;
+    private Long id;
+    private String name;
+    private String email;
+    private String phoneNumber;
+    private boolean usageAcceptance;
 
     @OneToMany
-    List<Reservation> reservations;
+    private List<Reservation> reservations;
 
     public User() {
     }

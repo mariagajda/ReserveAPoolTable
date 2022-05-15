@@ -10,37 +10,66 @@
 <h1>Reserve a Service</h1>
 <div>
     <h3>Your reservation details:</h3>
-    <p>Date: <c:out value="${date}"/></p>
+    <p>Date: <c:out value="${reservationsToConfirm.get(0).getDate()}"/></p>
     <c:forEach items="${reservationsToConfirm}" var="reservation">
         <p>Table no. ${reservation.table.tableNumber}: ${reservation.startTime} - ${reservation.endTime}</p>
     </c:forEach>
+    <c:set var="sum" scope="page" value="0.0"/>
+    <p>
+        Price:
+        <c:forEach items="${reservationsToConfirm}" var="reservation">
+            <c:set var="sum" scope="page" value="${sum + reservation.pricePerReservation}"/>
+        </c:forEach>
+        ${sum} PLN
+    </p>
 </div>
 <div>
     <h4>Are you a regular player? Log in!</h4>
-    <label>Email: <input type="email" name="email"/></label>
-    <label>Password: <input type="password" name="password"/></label>
-    <input type="submit" value="Log in"/>
-    <p>Do you want to register? <a href="<c:url value="/user/register"/>"/></p>
+    <form action="/user/log" method="post">
+        <label>Email:
+            <input type="email" name="email"/>
+        </label><br/>
+        <label>Password:
+            <input type="password" name="password"/>
+        </label><br/>
+        <input type="submit" value="Log in"/><br/>
+        <c:forEach items="${reservationsToConfirm}" var="reservation">
+            <input type="hidden" name="reservationsIdList" value="${reservation.id}"/>
+        </c:forEach>
+    </form>
+    <p>Do you want to register? <a href="<c:url value="user/register"/>">Click here</a></p>
 </div>
 <div>
     <h4>Only this reservation? Fill a form:</h4>
     <%--@elvariable id="user" type="pl.coderslab.reserveapooltable.entity.User"--%>
-    <form:form modelAttribute="user" method="post">
+    <form:form action="/user/add" modelAttribute="user" method="post">
         <label>Name:
             <form:input path="name"/>
             <form:errors path="name"/>
-        </label>
+        </label><br/>
         <label>Email:
             <form:input path="email"/>
             <form:errors path="email"/>
-        </label>
+        </label><br/>
         <label>Phone number:
             <form:input path="phoneNumber"/>
             <form:errors path="phoneNumber"/>
+        </label><br/>
+        <label>Payment method:
+            <select name="paymentMethod">
+                <option value="">Select...</option>
+                <option value="transfer">Online payment</option>
+                <option value="inPlace">Pay in place</option>
+            </select>
         </label>
-        <form:checkbox path="usageAcceptance" item="I accept the Terms of Use and Privacy Policy"/>
-        <form:errors path="usageAcceptance"/>
-        <br/>
+        <c:forEach items="${reservationsToConfirm}" var="reservation">
+            <input type="hidden" name="reservationsIdList" value="${reservation.id}"/>
+        </c:forEach>
+        <label>
+            <form:checkbox path="usageAcceptance"/>
+            <form:errors path="usageAcceptance"/>
+            I accept the Terms of Use and Privacy Policy
+        </label><br/>
         <input type="submit" value="Make a reservation"/>
     </form:form>
 </div>

@@ -7,8 +7,8 @@ public class TableToReserve {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-    int tableNumber;
+    private Long id;
+    private int tableNumber;
 
     public TableToReserve() {
     }

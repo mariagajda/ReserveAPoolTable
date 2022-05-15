@@ -8,14 +8,14 @@
 </head>
 <body>
 <h1>Reserve a Service</h1>
-<form action="/date" method="post">
+<form action="/reservation/date" method="post">
     <label>Pick date
         <input type="date" name="date" value="${date}"/>
     </label>
     <input type=submit value="Check availability"/>
 </form>
 
-<form action="/datetablesandhours" method="get">
+<form action="/reservation/datetablesandhours" method="post">
     <h3>Available hours & tables:</h3>
     <table>
         <tbody>

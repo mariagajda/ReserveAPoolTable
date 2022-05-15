@@ -1,5 +1,9 @@
 package pl.coderslab.reserveapooltable.entity;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import pl.coderslab.reserveapooltable.repository.HolidayWorkdaysRepository;
+import pl.coderslab.reserveapooltable.repository.PriceRepository;
+
 import javax.persistence.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -7,20 +11,21 @@ import java.time.LocalTime;
 
 @Entity
 public class Reservation {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-    LocalDate date;
-    LocalTime startTime;
-    LocalTime endTime;
-    boolean isAvailable;
-    double price;
+    private Long id;
+    private LocalDate date;
+    private LocalTime startTime;
+    private LocalTime endTime;
+    private boolean isAvailable;
+    private double pricePerReservation;
 
     @ManyToOne
-    TableToReserve table;
+    private TableToReserve table;
 
     @ManyToOne
-    User user;
+    private  User user;
 
     public Reservation() {
     }
@@ -31,7 +36,6 @@ public class Reservation {
         this.endTime = endTime;
         isAvailable = true;
         this.table = table;
-        countPrice();
     }
 
     public Long getId() {
@@ -90,44 +94,13 @@ public class Reservation {
         this.user = user;
     }
 
-    public double getPrice() {
-        return price;
+    public double getPricePerReservation() {
+        return pricePerReservation;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void setPricePerReservation(double price) {
+        this.pricePerReservation = price;
     }
 
-    public void countPrice(){
-        if(date.getDayOfWeek().equals(DayOfWeek.FRIDAY) && startTime.isBefore(LocalTime.of(18, 00))){
-            setPrice(Admin.fridayBefore18PricePerHour/2);
-        }
-        else if(date.getDayOfWeek().equals(DayOfWeek.FRIDAY) && startTime.isAfter(LocalTime.of(17, 59))){
-            setPrice(Admin.fridayAfter18PricePerHour/2);
-        }
-        else if(date.getDayOfWeek().equals(DayOfWeek.SATURDAY) && startTime.isBefore(LocalTime.of(18, 00))){
-            setPrice(Admin.saturdayBefore18PricePerHour/2);
-        }
-        else if(date.getDayOfWeek().equals(DayOfWeek.SATURDAY) && startTime.isAfter(LocalTime.of(17, 59))){
-            setPrice(Admin.saturdayAfter18PricePerHour/2);
-        }
-        else if(date.getDayOfWeek().equals(DayOfWeek.SUNDAY) && startTime.isBefore(LocalTime.of(18, 00))){
-            setPrice(Admin.sundayAndHolidaysBefore18PricePerHour/2);
-        }
-        else if(date.getDayOfWeek().equals(DayOfWeek.SUNDAY) && startTime.isAfter(LocalTime.of(17, 59))){
-            setPrice(Admin.sundayAndHolidaysAfter18PricePerHour/2);
-        }
-        else if(Admin.holidayDatesWorkdays.contains(date) && startTime.isBefore(LocalTime.of(18, 00))){
-            setPrice(Admin.sundayAndHolidaysBefore18PricePerHour/2);
-        }
-        else if(Admin.holidayDatesWorkdays.contains(date) && startTime.isAfter(LocalTime.of(17, 59))){
-            setPrice(Admin.sundayAndHolidaysAfter18PricePerHour/2);
-        }
-        else if(startTime.isBefore(LocalTime.of(18, 00))){
-            setPrice(Admin.mondayToThursdayBefore18PricePerHour);
-        }
-        else{
-            setPrice(Admin.mondayToThursdayAfter18PricePerHour);
-        }
-    }
+
 }
