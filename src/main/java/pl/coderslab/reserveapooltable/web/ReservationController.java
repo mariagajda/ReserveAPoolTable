@@ -5,11 +5,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
-import pl.coderslab.reserveapooltable.entity.HolidayWorkdays;
-import pl.coderslab.reserveapooltable.entity.Reservation;
-import pl.coderslab.reserveapooltable.entity.TableToReserve;
-import pl.coderslab.reserveapooltable.entity.User;
+import pl.coderslab.reserveapooltable.entity.*;
 import pl.coderslab.reserveapooltable.repository.HolidayWorkdaysRepository;
 import pl.coderslab.reserveapooltable.repository.PriceRepository;
 import pl.coderslab.reserveapooltable.repository.ReservationRepository;
@@ -28,7 +26,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
-@SessionAttributes("reservationsToConfirm")
+@SessionAttributes({"reservationsToConfirm", "user", "priceSum"})
 @RequestMapping("/reservation")
 public class ReservationController {
     private static final Logger logger = LoggerFactory.getLogger(ReservationController.class);
@@ -44,6 +42,11 @@ public class ReservationController {
 
     @Autowired
     private HolidayWorkdaysRepository holidayWorkdaysRepository;
+
+    @RequestMapping("/add")
+    public String addReservations(){
+        return "reservations-add-form";
+    }
 
     @RequestMapping("/date")
     public String pickDate(Model model) {
@@ -73,67 +76,119 @@ public class ReservationController {
     public String saveTablesAndHours(HttpServletRequest request, Model model) {
         String[] pickedReservationsId = request.getParameterValues("pickedReservations");
         List<Reservation> reservationsList = new ArrayList<>();
+        double priceSum = 0.0;
         Arrays.stream(pickedReservationsId).forEach(id -> {
             Reservation reservation = reservationRepository.findById(Long.parseLong(id)).get();
             countPrice(reservation);
             reservationRepository.save(reservation);
             reservationsList.add(reservation);
         });
+        for (Reservation r : reservationsList) {
+            priceSum += r.getPricePerReservation();
+        }
 
         model.addAttribute("date", reservationsList.get(0).getDate());
         model.addAttribute("reservationsToConfirm", reservationsList);
-        return "redirect:/user/add";
+        model.addAttribute("priceSum", priceSum);
+        return "redirect:/reservation/summary/userData";
     }
 
-    @RequestMapping(value = "/confirm")
-    public String confirmReservation(Model model, HttpSession session) {
+    @RequestMapping(value = "/summary/userData", method = RequestMethod.GET)
+    public String addUser(Model model) {
+        model.addAttribute("user", new User());
+        return "reservation-summary-user-data";
+    }
+
+    @RequestMapping("/details")
+    public String showReservationDetails() {
+
+        return "user-reservation-details";
+    }
+
+    @RequestMapping(value = "/details", method = RequestMethod.POST)
+    public String confirmReservation(HttpServletRequest request) {
+        String paymentMethod = request.getParameter("paymentMethod");
+        if (paymentMethod.equals("transfer")) {
+            return "redirect:/reservation/payment/transfer";
+        } else {
+            return "redirect:/reservation/payment/inPlace";
+        }
+    }
+
+
+    @RequestMapping(value = "/payment/transfer")
+    public String payForReservationOnline(Model model) {
+
+        return "payment-online";
+    }
+
+    @RequestMapping(value = "/payment/inPlace")
+    public String payForReservationLater(Model model) {
+
+        return "payment-in-place";
+    }
+
+    @RequestMapping(value = "/payment/succeeded")
+    public String payWithSuccess(HttpSession session) {
         User user = (User) session.getAttribute("user");
         List<Reservation> reservationsToConfirm = (List<Reservation>) session.getAttribute("reservationsToConfirm");
         reservationsToConfirm.stream().forEach(reservation -> {
             reservation.setUser(user);
+            reservation.setAvailable(false);
             reservationRepository.save(reservation);
+            if (user instanceof RegisteredUser) {
+                RegisteredUser registeredUser = (RegisteredUser) user;
+                registeredUser.setReservationsCounter(registeredUser.getReservationsCounter() + 1);
+            }
         });
-        return "redirect:/reservation/payment";
+
+        return "reservation-succeeded";
     }
 
-    @RequestMapping(value = "/payment")
-    @ResponseBody
-    public String payForReservation() {
-        return "payment-online";
+    @RequestMapping(value = "/payment-in-place/succeeded")
+    public String payInPlaceReservationSuccedded(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        List<Reservation> reservationsToConfirm = (List<Reservation>) session.getAttribute("reservationsToConfirm");
+        reservationsToConfirm.stream().forEach(reservation -> {
+            reservation.setUser(user);
+            reservation.setAvailable(false);
+            reservationRepository.save(reservation);
+            if (user instanceof RegisteredUser) {
+                RegisteredUser registeredUser = (RegisteredUser) user;
+                registeredUser.setReservationsCounter(registeredUser.getReservationsCounter() + 1);
+            }
+        });
+
+        return "reservation-succeeded";
     }
 
+    @RequestMapping(value = "/payment/failed")
+    public String payWithoutSuccess() {
+        return "payment-failed";
+    }
 
 
     public void countPrice(Reservation reservation) {
-        if(reservation.getDate().getDayOfWeek().equals(DayOfWeek.FRIDAY) && reservation.getStartTime().isBefore(LocalTime.of(18, 00))){
-            reservation.setPricePerReservation((priceRepository.findByDayOfWeekAndStartTime("Friday", LocalTime.of(0, 0)).getPricePerHour())/2);
-        }
-        else if(reservation.getDate().getDayOfWeek().equals(DayOfWeek.FRIDAY) && reservation.getStartTime().isAfter(LocalTime.of(17, 59))){
-            reservation.setPricePerReservation(priceRepository.findByDayOfWeekAndStartTime("Friday", LocalTime.of(18, 0)).getPricePerHour()/2);
-        }
-        else if(reservation.getDate().getDayOfWeek().equals(DayOfWeek.SATURDAY) && reservation.getStartTime().isBefore(LocalTime.of(18, 00))){
-            reservation.setPricePerReservation(priceRepository.findByDayOfWeekAndStartTime("Friday", LocalTime.of(0, 0)).getPricePerHour()/2);
-        }
-        else if(reservation.getDate().getDayOfWeek().equals(DayOfWeek.SATURDAY) && reservation.getStartTime().isAfter(LocalTime.of(17, 59))){
-            reservation.setPricePerReservation(priceRepository.findByDayOfWeekAndStartTime("Friday", LocalTime.of(0, 0)).getPricePerHour()/2);
-        }
-        else if(reservation.getDate().getDayOfWeek().equals(DayOfWeek.SUNDAY) && reservation.getStartTime().isBefore(LocalTime.of(18, 00))){
-            reservation.setPricePerReservation(priceRepository.findByDayOfWeekAndStartTime("Friday", LocalTime.of(0, 0)).getPricePerHour()/2);
-        }
-        else if(reservation.getDate().getDayOfWeek().equals(DayOfWeek.SUNDAY) && reservation.getStartTime().isAfter(LocalTime.of(17, 59))){
-            reservation.setPricePerReservation(priceRepository.findByDayOfWeekAndStartTime("Friday", LocalTime.of(0, 0)).getPricePerHour()/2);
-        }
-        else if(holidayWorkdaysRepository.findAll().stream().map(HolidayWorkdays::getDate).collect(Collectors.toList()).contains(reservation.getDate()) && reservation.getStartTime().isBefore(LocalTime.of(18, 00))){
-            reservation.setPricePerReservation(priceRepository.findByDayOfWeekAndStartTime("Friday", LocalTime.of(0, 0)).getPricePerHour()/2);
-        }
-        else if(holidayWorkdaysRepository.findAll().stream().map(HolidayWorkdays::getDate).collect(Collectors.toList()).contains(reservation.getDate()) && reservation.getStartTime().isAfter(LocalTime.of(17, 59))){
-            reservation.setPricePerReservation(priceRepository.findByDayOfWeekAndStartTime("Friday", LocalTime.of(0, 0)).getPricePerHour()/2);
-        }
-        else if(reservation.getStartTime().isBefore(LocalTime.of(18, 00))){
-            reservation.setPricePerReservation(priceRepository.findByDayOfWeekAndStartTime("Monday-Thursday", LocalTime.of(0, 0)).getPricePerHour()/2);
-        }
-        else{
-            reservation.setPricePerReservation(priceRepository.findByDayOfWeekAndStartTime("Monday-Thursday", LocalTime.of(0, 0)).getPricePerHour()/2);
+        if (reservation.getDate().getDayOfWeek().equals(DayOfWeek.FRIDAY) && reservation.getStartTime().isBefore(LocalTime.of(18, 00))) {
+            reservation.setPricePerReservation((priceRepository.findByDayOfWeekAndStartTime("Friday", LocalTime.of(0, 0)).getPricePerHour()) / 2);
+        } else if (reservation.getDate().getDayOfWeek().equals(DayOfWeek.FRIDAY) && reservation.getStartTime().isAfter(LocalTime.of(17, 59))) {
+            reservation.setPricePerReservation(priceRepository.findByDayOfWeekAndStartTime("Friday", LocalTime.of(18, 0)).getPricePerHour() / 2);
+        } else if (reservation.getDate().getDayOfWeek().equals(DayOfWeek.SATURDAY) && reservation.getStartTime().isBefore(LocalTime.of(18, 00))) {
+            reservation.setPricePerReservation(priceRepository.findByDayOfWeekAndStartTime("Friday", LocalTime.of(0, 0)).getPricePerHour() / 2);
+        } else if (reservation.getDate().getDayOfWeek().equals(DayOfWeek.SATURDAY) && reservation.getStartTime().isAfter(LocalTime.of(17, 59))) {
+            reservation.setPricePerReservation(priceRepository.findByDayOfWeekAndStartTime("Friday", LocalTime.of(0, 0)).getPricePerHour() / 2);
+        } else if (reservation.getDate().getDayOfWeek().equals(DayOfWeek.SUNDAY) && reservation.getStartTime().isBefore(LocalTime.of(18, 00))) {
+            reservation.setPricePerReservation(priceRepository.findByDayOfWeekAndStartTime("Friday", LocalTime.of(0, 0)).getPricePerHour() / 2);
+        } else if (reservation.getDate().getDayOfWeek().equals(DayOfWeek.SUNDAY) && reservation.getStartTime().isAfter(LocalTime.of(17, 59))) {
+            reservation.setPricePerReservation(priceRepository.findByDayOfWeekAndStartTime("Friday", LocalTime.of(0, 0)).getPricePerHour() / 2);
+        } else if (holidayWorkdaysRepository.findAll().stream().map(HolidayWorkdays::getDate).collect(Collectors.toList()).contains(reservation.getDate()) && reservation.getStartTime().isBefore(LocalTime.of(18, 00))) {
+            reservation.setPricePerReservation(priceRepository.findByDayOfWeekAndStartTime("Friday", LocalTime.of(0, 0)).getPricePerHour() / 2);
+        } else if (holidayWorkdaysRepository.findAll().stream().map(HolidayWorkdays::getDate).collect(Collectors.toList()).contains(reservation.getDate()) && reservation.getStartTime().isAfter(LocalTime.of(17, 59))) {
+            reservation.setPricePerReservation(priceRepository.findByDayOfWeekAndStartTime("Friday", LocalTime.of(0, 0)).getPricePerHour() / 2);
+        } else if (reservation.getStartTime().isBefore(LocalTime.of(18, 00))) {
+            reservation.setPricePerReservation(priceRepository.findByDayOfWeekAndStartTime("Monday-Thursday", LocalTime.of(0, 0)).getPricePerHour() / 2);
+        } else {
+            reservation.setPricePerReservation(priceRepository.findByDayOfWeekAndStartTime("Monday-Thursday", LocalTime.of(0, 0)).getPricePerHour() / 2);
         }
     }
 

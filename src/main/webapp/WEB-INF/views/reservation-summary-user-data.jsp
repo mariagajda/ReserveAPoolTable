@@ -4,7 +4,11 @@
 <html>
 <head>
     <title>Reserve a Service</title>
-
+    <style>
+        .error {
+            color: red;
+        }
+    </style>
 </head>
 <body>
 <h1>Reserve a Service</h1>
@@ -16,11 +20,8 @@
     </c:forEach>
     <c:set var="sum" scope="page" value="0.0"/>
     <p>
-        Price:
-        <c:forEach items="${reservationsToConfirm}" var="reservation">
-            <c:set var="sum" scope="page" value="${sum + reservation.pricePerReservation}"/>
-        </c:forEach>
-        ${sum} PLN
+        Price: <c:out value="${priceSum}"/> PLN
+
     </p>
 </div>
 <div>
@@ -45,7 +46,7 @@
     <form:form action="/user/add" modelAttribute="user" method="post">
         <label>Name:
             <form:input path="name"/>
-            <form:errors path="name"/>
+            <form:errors path="name" cssClass="error"/>
         </label><br/>
         <label>Email:
             <form:input path="email"/>
@@ -53,7 +54,7 @@
         </label><br/>
         <label>Phone number:
             <form:input path="phoneNumber"/>
-            <form:errors path="phoneNumber"/>
+            <form:errors path="phoneNumber" cssClass="error"/>
         </label><br/>
         <label>Payment method:
             <select name="paymentMethod">
@@ -67,7 +68,7 @@
         </c:forEach>
         <label>
             <form:checkbox path="usageAcceptance"/>
-            <form:errors path="usageAcceptance"/>
+            <form:errors path="usageAcceptance" cssClass="error"/>
             I accept the Terms of Use and Privacy Policy
         </label><br/>
         <input type="submit" value="Make a reservation"/>

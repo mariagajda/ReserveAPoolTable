@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Controller
-@SessionAttributes({"reservationsToConfirm", "user"})
+@SessionAttributes({"reservationsToConfirm", "user", "priceSum"})
 @RequestMapping("/user")
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -37,11 +37,6 @@ public class UserController {
     @Autowired
     UserRepository userRepository;
 
-    @RequestMapping(value = "/add", method = RequestMethod.GET)
-    public String addUser(Model model) {
-        model.addAttribute("user", new User());
-        return "user-data";
-    }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public String saveUser(Model model, HttpServletRequest request, @Valid User user, BindingResult result) {
@@ -59,7 +54,11 @@ public class UserController {
         });
         model.addAttribute("user", user);
         model.addAttribute("reservationsToConfirm", reservationsToConfirmList);
-        return "redirect:/reservation/confirm";
+        if (paymentMethod.equals("transfer")) {
+            return "redirect:/reservation/payment/transfer";
+        } else {
+            return "redirect:/reservation/payment/inPlace";
+        }
     }
 
     @RequestMapping(value = "/log", method = RequestMethod.POST)
@@ -80,8 +79,9 @@ public class UserController {
         model.addAttribute("user", registeredUser);
         model.addAttribute("reservationsToConfirm", reservationsToConfirmList);
 
-        return "redirect:/reservation/confirm";
+        return "redirect:/reservation/details";
     }
+
 
     @RequestMapping("/register")
     public String registerNewUser(Model model) {
@@ -95,7 +95,7 @@ public class UserController {
         if (result.hasErrors()) {
             return "user-register";
         }
-    registeredUserRepository.save(registeredUser);
+        registeredUserRepository.save(registeredUser);
         return "redirect:/user/log";
     }
 

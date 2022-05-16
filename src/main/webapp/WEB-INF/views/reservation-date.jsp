@@ -1,4 +1,5 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -19,26 +20,26 @@
     <thead>
     <tr>
         <th></th>
-        <th>${monToThursdayBefore18.dayOfWeek}</th>
-        <th>${fridayBefore18.dayOfWeek}</th>
-        <th>${saturdayBefore18.dayOfWeek}</th>
-        <th>${sundayHolidaysBefore18.dayOfWeek}<sup>*</sup></th>
+        <th><c:out value="${monToThursdayBefore18.dayOfWeek}"/></th>
+        <th><c:out value="${fridayBefore18.dayOfWeek}"/></th>
+        <th><c:out value="${saturdayBefore18.dayOfWeek}"/></th>
+        <th><c:out value="${sundayHolidaysBefore18.dayOfWeek}"/><sup>*</sup></th>
     </tr>
     </thead>
     <tbody>
     <tr>
-        <td>before ${monToThursdayBefore18.endTime}</td>
-        <td><c:out value="${monToThursdayBefore18.pricePerHour}"/> <a href=""</td>
-        <td><c:out value="${fridayBefore18.pricePerHour}"/></td>
-        <td><c:out value="${saturdayBefore18.pricePerHour}"/></td>
-        <td><c:out value="${sundayHolidaysBefore18.pricePerHour}"/></td>
+        <td>before <c:out value="${monToThursdayBefore18.endTime}"/></td>
+        <td><c:out value="${monToThursdayBefore18.pricePerHour}"/> PLN</td>
+        <td><c:out value="${fridayBefore18.pricePerHour}"/> PLN</td>
+        <td><c:out value="${saturdayBefore18.pricePerHour}"/> PLN</td>
+        <td><c:out value="${sundayHolidaysBefore18.pricePerHour}"/> PLN</td>
     </tr>
     <tr>
-        <td>after ${monToThursdayAfter18.startTime}</td>
-        <td><c:out value="${monToThursdayAfter18.pricePerHour}"/> </td>
-        <td><c:out value="${fridayAfter18.pricePerHour}"/></td>
-        <td><c:out value="${saturdayAfter18.pricePerHour}"/></td>
-        <td><c:out value="${sundayHolidaysAfter18.pricePerHour}"/></td>
+        <td>after <c:out value="${monToThursdayAfter18.startTime}"/></td>
+        <td><c:out value="${monToThursdayAfter18.pricePerHour}"/> PLN</td>
+        <td><c:out value="${fridayAfter18.pricePerHour}"/> PLN</td>
+        <td><c:out value="${saturdayAfter18.pricePerHour}"/> PLN</td>
+        <td><c:out value="${sundayHolidaysAfter18.pricePerHour}"/> PLN</td>
     </tr>
     </tbody>
 </table>
