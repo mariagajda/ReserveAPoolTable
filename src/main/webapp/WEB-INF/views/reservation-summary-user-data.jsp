@@ -16,7 +16,8 @@
     <h3>Your reservation details:</h3>
     <p>Date: <c:out value="${reservationsToConfirm.get(0).getDate()}"/></p>
     <c:forEach items="${reservationsToConfirm}" var="reservation">
-        <p>Table no. ${reservation.table.tableNumber}: ${reservation.startTime} - ${reservation.endTime}</p>
+        <p>Table no. ${reservation.table.tableNumber}: ${reservation.startDateTime.getHour()}:${reservation.startDateTime.getMinute()}
+            - ${reservation.endDateTime.getHour()}:${reservation.endDateTime.getMinute()}</p>
     </c:forEach>
     <c:set var="sum" scope="page" value="0.0"/>
     <p>

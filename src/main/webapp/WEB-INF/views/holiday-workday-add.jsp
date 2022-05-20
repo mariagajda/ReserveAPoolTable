@@ -15,7 +15,7 @@
         <form:errors path="date"/>
     </label><br/>
 
-    <input type="submit" value="Make a reservation"/>
+    <input type="submit" value="Add"/>
 </form:form>
 </body>
 </html>

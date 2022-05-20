@@ -1,5 +1,7 @@
 package pl.coderslab.reserveapooltable.entity;
 
+import pl.coderslab.reserveapooltable.enums.PriceGroup;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,9 +14,8 @@ public class Price {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String dayOfWeek;
-    private LocalTime startTime;
-    private LocalTime endTime;
+    private PriceGroup priceGroup;
+    private boolean isNightTime;
     private double pricePerHour;
 
     public Price() {
@@ -28,28 +29,20 @@ public class Price {
         this.id = id;
     }
 
-    public String getDayOfWeek() {
-        return dayOfWeek;
+    public PriceGroup getPriceGroup() {
+        return priceGroup;
     }
 
-    public void setDayOfWeek(String dayOfWeek) {
-        this.dayOfWeek = dayOfWeek;
+    public void setPriceGroup(PriceGroup priceGroup) {
+        this.priceGroup = priceGroup;
     }
 
-    public LocalTime getStartTime() {
-        return startTime;
+    public boolean isNightTime() {
+        return isNightTime;
     }
 
-    public void setStartTime(LocalTime startTime) {
-        this.startTime = startTime;
-    }
-
-    public LocalTime getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(LocalTime endTime) {
-        this.endTime = endTime;
+    public void setNightTime(boolean nightTime) {
+        isNightTime = nightTime;
     }
 
     public double getPricePerHour() {

@@ -1,13 +1,16 @@
 package pl.coderslab.reserveapooltable.entity;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import pl.coderslab.reserveapooltable.enums.PriceGroup;
 import pl.coderslab.reserveapooltable.repository.HolidayWorkdaysRepository;
 import pl.coderslab.reserveapooltable.repository.PriceRepository;
 
 import javax.persistence.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.stream.Collectors;
 
 @Entity
 public class Reservation {
@@ -16,24 +19,27 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDate date;
-    private LocalTime startTime;
-    private LocalTime endTime;
+    private LocalDateTime startDateTime;
+    private LocalDateTime endDateTime;
+    private PriceGroup priceGroup;
     private boolean isAvailable;
     private double pricePerReservation;
+
 
     @ManyToOne
     private TableToReserve table;
 
     @ManyToOne
-    private  User user;
+    private User user;
 
     public Reservation() {
     }
 
-    public Reservation(LocalDate date, LocalTime startTime, LocalTime endTime, TableToReserve table) {
+    public Reservation(LocalDate date, LocalDateTime startDateTime, LocalDateTime endDateTime, PriceGroup priceGroup, TableToReserve table) {
         this.date = date;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.startDateTime = startDateTime;
+        this.endDateTime = endDateTime;
+        this.priceGroup = priceGroup;
         isAvailable = true;
         this.table = table;
     }
@@ -54,20 +60,28 @@ public class Reservation {
         this.date = date;
     }
 
-    public LocalTime getStartTime() {
-        return startTime;
+    public LocalDateTime getStartDateTime() {
+        return startDateTime;
     }
 
-    public void setStartTime(LocalTime startTime) {
-        this.startTime = startTime;
+    public void setStartDateTime(LocalDateTime startDateTime) {
+        this.startDateTime = startDateTime;
     }
 
-    public LocalTime getEndTime() {
-        return endTime;
+    public LocalDateTime getEndDateTime() {
+        return endDateTime;
     }
 
-    public void setEndTime(LocalTime endTime) {
-        this.endTime = endTime;
+    public void setEndDateTime(LocalDateTime endDateTime) {
+        this.endDateTime = endDateTime;
+    }
+
+    public PriceGroup getPriceGroup() {
+        return priceGroup;
+    }
+
+    public void setPriceGroup(PriceGroup priceGroup) {
+        this.priceGroup = priceGroup;
     }
 
     public boolean isAvailable() {
@@ -102,5 +116,18 @@ public class Reservation {
         this.pricePerReservation = price;
     }
 
-
+    @Override
+    public String toString() {
+        return "Reservation{" +
+                "id=" + id +
+                ", date=" + date +
+                ", startDateTime=" + startDateTime +
+                ", endDateTime=" + endDateTime +
+                ", priceGroup=" + priceGroup +
+                ", isAvailable=" + isAvailable +
+                ", pricePerReservation=" + pricePerReservation +
+                ", table no.=" + table.getTableNumber() +
+                ", user name=" + user.getName() +
+                '}';
+    }
 }

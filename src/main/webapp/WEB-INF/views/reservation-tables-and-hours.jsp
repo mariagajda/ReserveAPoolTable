@@ -33,11 +33,12 @@
             <c:when test="${reservation.isAvailable()}">
             <td style="background-color: lightgreen"><input type="checkbox" name="pickedReservations"
                                                             value="${reservation.id}"
-                                                            id="checkbox"/>${reservation.startTime}
-                - ${reservation.endTime}
+                                                            id="checkbox"/>${reservation.startDateTime.getHour()}:${reservation.startDateTime.getMinute()}
+                - ${reservation.endDateTime.getHour()}:${reservation.endDateTime.getMinute()}
                 </c:when>
                 <c:otherwise>
-            <td style="background-color: indianred">${reservation.startTime} - ${reservation.endTime}
+            <td style="background-color: indianred">${reservation.startDateTime.getHour()}:${reservation.startDateTime.getMinute()}
+            - ${reservation.endDateTime.getHour()}:${reservation.endDateTime.getMinute()}
                 </c:otherwise>
                 </c:choose>
             </td>

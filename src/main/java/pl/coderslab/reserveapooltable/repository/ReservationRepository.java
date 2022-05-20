@@ -11,11 +11,13 @@ import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
-    @Query("SELECT r FROM Reservation r WHERE r.date = :date ORDER BY r.table.tableNumber, r.startTime")
+    @Query("SELECT r FROM Reservation r WHERE r.date = :date ORDER BY r.table.tableNumber, r.startDateTime")
     List<Reservation> findAllByDateSorted(@Param("date") LocalDate date);
 
     @Query("SELECT r FROM Reservation r ORDER BY r.date DESC")
-    List<Reservation> findAllByReservationDateDesc();
+    List<Reservation> findAllSortByReservationDateDesc();
+
+
 
 
 

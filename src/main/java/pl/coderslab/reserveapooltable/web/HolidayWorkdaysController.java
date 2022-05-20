@@ -36,7 +36,7 @@ public class HolidayWorkdaysController {
             return "holiday-workday-add";
         }
         holidayWorkdaysRepository.save(holidayWorkdays);
-        return "/holiday-workdays/list";
+        return "redirect:/holiday-workdays/list";
     }
 
     @RequestMapping("/delete/{id}")
