@@ -61,8 +61,13 @@ public class UserController {
         }
     }
 
+    @RequestMapping("/log")
+    public String logUser() {
+        return "login";
+    }
+
     @RequestMapping(value = "/log", method = RequestMethod.POST)
-    public String logUser(Model model, HttpServletRequest request) {
+    public String checkUserLog(Model model, HttpServletRequest request) {
         String[] reservationsToConfirm = request.getParameterValues("reservationsIdList");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
@@ -90,7 +95,6 @@ public class UserController {
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    @ResponseBody
     public String saveRegisteredUser(@Valid RegisteredUser registeredUser, BindingResult result) {
         if (result.hasErrors()) {
             return "user-register";

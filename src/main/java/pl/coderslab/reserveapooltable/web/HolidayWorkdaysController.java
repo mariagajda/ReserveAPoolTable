@@ -21,19 +21,19 @@ public class HolidayWorkdaysController {
     @RequestMapping("/list")
     public String showHolidayWorkdays(Model model) {
         model.addAttribute("holidayWorkdaysList", holidayWorkdaysRepository.findAll());
-        return "holiday-workdays-list";
+        return "admin-holiday-workdays-list";
     }
 
     @RequestMapping("/add")
     public String addHolidayWorkday(Model model) {
         model.addAttribute("holidayWorkday", new HolidayWorkdays());
-        return "holiday-workday-add";
+        return "admin-holiday-workday-add";
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public String addHolidayWorkday(Model model, @Valid HolidayWorkdays holidayWorkdays, BindingResult result) {
         if(result.hasErrors()){
-            return "holiday-workday-add";
+            return "admin-holiday-workday-add";
         }
         holidayWorkdaysRepository.save(holidayWorkdays);
         return "redirect:/holiday-workdays/list";

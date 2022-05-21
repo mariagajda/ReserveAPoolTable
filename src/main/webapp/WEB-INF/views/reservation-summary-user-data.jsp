@@ -39,7 +39,7 @@
             <input type="hidden" name="reservationsIdList" value="${reservation.id}"/>
         </c:forEach>
     </form>
-    <p>Do you want to register? <a href="<c:url value="user/register"/>">Click here</a></p>
+    <p>Do you want to register? <a href="<c:url value="/user/register"/>">Click here</a></p>
 </div>
 <div>
     <h4>Only this reservation? Fill a form:</h4>

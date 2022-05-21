@@ -1,6 +1,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 <html>
 <head>
     <title>Admin Panel</title>
@@ -10,7 +11,7 @@
 <div>
     <p>You have set possible reservations up to ${lastReservationDateInDatabase} ${lastReservationDateWarning}.</p>
     <h3>If you want to add possible reservations fill the form:</h3>
-    <form action="/reservation/add" method="post">
+    <form action="/admin/reservations/add" method="post">
         <label>Reservations for period from <input type="date" name="firstDay" value="${firstReservationDate}"> to:
             <input type="date"
                    name="lastDay"/></label>
@@ -38,3 +39,4 @@
 </div>
 </body>
 </html>
+

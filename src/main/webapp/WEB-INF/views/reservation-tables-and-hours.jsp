@@ -10,7 +10,7 @@
 <h1>Reserve a Service</h1>
 <form action="/reservation/date" method="post">
     <label>Pick date
-        <input type="date" name="date" value="${date}"/>
+        <input type="date" name="dateStr" value="${date}"/>
     </label>
     <input type=submit value="Check availability"/>
 </form>
@@ -38,9 +38,9 @@
                 </c:when>
                 <c:otherwise>
             <td style="background-color: indianred">${reservation.startDateTime.getHour()}:${reservation.startDateTime.getMinute()}
-            - ${reservation.endDateTime.getHour()}:${reservation.endDateTime.getMinute()}
+                - ${reservation.endDateTime.getHour()}:${reservation.endDateTime.getMinute()}
                 </c:otherwise>
-                </c:choose>
+            </c:choose>
             </td>
             </c:if>
             </c:forEach>

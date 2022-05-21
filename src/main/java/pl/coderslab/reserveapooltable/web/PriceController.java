@@ -35,19 +35,19 @@ public class PriceController {
         model.addAttribute("fridayAfter18", priceRepository.findById(6L).get());
         model.addAttribute("saturdayAfter18", priceRepository.findById(7L).get());
         model.addAttribute("sundayHolidaysAfter18", priceRepository.findById(8L).get());
-        return "price-list";
+        return "admin-price-list";
     }
 
    @RequestMapping("/edit/{id}")
     public String editPrice(Model model, @PathVariable Long id){
         model.addAttribute("price", priceRepository.findById(id).get());
-        return "price-edit";
+        return "admin-price-edit";
    }
 
    @RequestMapping(value="/edit/{id}", method = RequestMethod.POST)
     public String savePrice(@PathVariable Long id, @Valid Price price, BindingResult result){
         if(result.hasErrors()){
-            return "price-edit";
+            return "admin-price-edit";
         }
         priceRepository.save(price);
         return "redirect:/price/list";
