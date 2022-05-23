@@ -1,0 +1,66 @@
+package pl.coderslab.reserveapooltable.service;
+
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+import pl.coderslab.reserveapooltable.DTO.RegisteredUserDTO;
+import pl.coderslab.reserveapooltable.entity.RegisteredUser;
+import pl.coderslab.reserveapooltable.entity.Role;
+import pl.coderslab.reserveapooltable.errors.UserAlreadyExistException;
+import pl.coderslab.reserveapooltable.repository.RegisteredUserRepository;
+import pl.coderslab.reserveapooltable.repository.RoleRepository;
+
+import javax.transaction.Transactional;
+import java.util.Arrays;
+import java.util.HashSet;
+
+@Service
+@Transactional
+public class RegisteredUserServiceImpl implements RegisteredUserService, IRegisteredUserService {
+    private final RegisteredUserRepository registeredUserRepository;
+    private final RoleRepository roleRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
+
+    public RegisteredUserServiceImpl(RegisteredUserRepository registeredUserRepository, RoleRepository roleRepository,
+                                     BCryptPasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+        this.registeredUserRepository = registeredUserRepository;
+        this.roleRepository = roleRepository;
+    }
+
+    @Override
+    public RegisteredUser findRegisteredUserByUsername(String username) {
+        return registeredUserRepository.findRegisteredUserByUsername(username);
+    }
+
+//    @Override
+//    public void saveRegisteredUser(RegisteredUser registeredUser) {
+//        registeredUser.setPassword(passwordEncoder.encode(registeredUser.getPassword()));
+//        registeredUser.setEnabled(1);
+//        Role userRole = roleRepository.findByName("ROLE_USER");
+//        registeredUser.setRoles(new HashSet<>(Arrays.asList(userRole)));
+//        registeredUserRepository.save(registeredUser);
+//    }
+
+    public RegisteredUser registerNewUserAccount(RegisteredUserDTO registeredUserDTO) throws UserAlreadyExistException {
+        if (emailExist(registeredUserDTO.getEmail())) {
+            throw new UserAlreadyExistException("There is an account with that email address: "
+                    + registeredUserDTO.getEmail());
+        }
+        RegisteredUser registeredUser = new RegisteredUser();
+        registeredUser.setUsername(registeredUserDTO.getUsername());
+        registeredUser.setPassword(passwordEncoder.encode(registeredUserDTO.getPassword()));
+        registeredUser.setEmail(registeredUserDTO.getEmail());
+        registeredUser.setPhoneNumber(registeredUserDTO.getPhoneNumber());
+        registeredUser.setUsageAcceptance(registeredUserDTO.isUsageAcceptance());
+        registeredUser.setEnabled(1);
+        Role userRole = roleRepository.findByName("ROLE_USER");
+        registeredUser.setRoles(new HashSet<>(Arrays.asList(userRole)));
+       return registeredUserRepository.save(registeredUser);
+
+    }
+    private boolean emailExist(String email) {
+        return registeredUserRepository.findUserByEmail(email) != null;
+    }
+
+}

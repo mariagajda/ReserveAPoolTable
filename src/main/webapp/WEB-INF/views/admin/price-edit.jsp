@@ -1,6 +1,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<sec:authorize access="hasRole('ADMIN')">
 <html>
 <head>
     <title>Price to edit</title>
@@ -13,18 +14,15 @@
 <body>
 <%--@elvariable id="price" type="pl.coderslab.entity.Price"--%>
 <form:form modelAttribute="price" method="post">
-    <label for="dayOfWeek">Day of week: </label>
-    <form:input path="dayOfWeek" itemLabel="dayOfWeek"/> PLN/hour
-    <form:errors path="dayOfWeek" cssClass="error"/>
+    <label for="priceGroup">PriceGroup: </label>
+    <form:input path="priceGroup" itemLabel="priceGroup"/>
+    <form:errors path="priceGroup" cssClass="error"/>
     <br/>
-    <label for="startTime">Start time: </label>
-    <form:input path="startTime" itemLabel="startTime"/> PLN/hour
-    <form:errors path="startTime" cssClass="error"/>
+    <label for="isNightTime">Is it nighttime price: </label>
+    <form:input path="isNightTime" itemLabel="isNightTime"/>
+    <form:errors path="isNightTime" cssClass="error"/>
     <br/>
-    <label for="endTime">End time: </label>
-    <form:input path="endTime" itemLabel="endTime"/> PLN/hour
-    <form:errors path="endTime" cssClass="error"/>
-    <br/>
+
 
     <label for="pricePerHour">Price per hour: </label>
     <form:input path="pricePerHour" itemLabel="pricePerHour"/> PLN/hour
@@ -35,3 +33,4 @@
 </form:form>
 </body>
 </html>
+</sec:authorize>

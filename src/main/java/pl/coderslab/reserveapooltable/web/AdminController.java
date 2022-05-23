@@ -1,6 +1,7 @@
 package pl.coderslab.reserveapooltable.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
+@Secured("ROLE_ADMIN")
 @RequestMapping("/admin")
 public class AdminController {
     @Autowired
@@ -53,7 +55,7 @@ public class AdminController {
             model.addAttribute("firstReservationDate", LocalDate.from(lastReservationDateInDatabase).plusDays(1));
         }
 
-        return "admin-management-panel";
+        return "admin/management-panel";
     }
 
     @RequestMapping(value = "/reservations/add", method = RequestMethod.POST)
@@ -89,19 +91,13 @@ public class AdminController {
                 }
                 long numberOfHours = dateTimeFrom.until(dateTimeTo, ChronoUnit.HOURS);
                 long numberOfReservationsPerDay = numberOfHours * 60 / duration;
-//                logger.info("dateTimeFrom: " + dateTimeFrom);
-//                logger.info("dateTimeTo: " + dateTimeTo);
-//                logger.info("numberOfHours" + numberOfHours);
-//                logger.info("numberOfReservationsPerDay" + numberOfReservationsPerDay);
 
                 for (int i = 0; i < numberOfReservationsPerDay; i++) {
-//                    logger.info("dateTimeFrom: " + dateTimeFrom);
-//                    logger.info("numberOfReservationsPerDay: " + numberOfReservationsPerDay);
+
                     for (int j = 0; j < tables.size(); j++) {
                         Reservation reservation = new Reservation(date, dateTimeFrom, dateTimeFrom.plusMinutes(duration), PriceGroup.FRI, tables.get(j));
                         countPrice(reservation, duration);
                         reservationRepository.save(reservation);
-//                        logger.info("reservation.toString: " + reservation.toString());
                     }
                     dateTimeFrom = dateTimeFrom.plusMinutes(duration);
                 }
@@ -174,7 +170,7 @@ public class AdminController {
 
 //    @RequestMapping ("/reservations/list")
 //    public String showReservations(){
-//        return "reservations-list";
+//        return "admin/reservations-list";
 //    }
 
     public void countPrice(Reservation reservation, long duration) {

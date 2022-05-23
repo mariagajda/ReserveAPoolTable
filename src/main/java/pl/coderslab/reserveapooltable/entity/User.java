@@ -1,9 +1,8 @@
 package pl.coderslab.reserveapooltable.entity;
 
-import org.springframework.web.bind.annotation.GetMapping;
-
 import javax.persistence.*;
 import javax.persistence.GenerationType;
+import javax.validation.constraints.*;
 import java.util.List;
 
 
@@ -15,9 +14,18 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+
+    @NotNull
+    @NotBlank
+    @Email
     private String email;
+
+    @NotNull
+    @NotBlank
+    @Pattern(regexp = "\\d{9}")
     private String phoneNumber;
+
+    @AssertTrue
     private boolean usageAcceptance;
 
     @OneToMany
@@ -26,10 +34,10 @@ public class User {
     public User() {
     }
 
-    public User(String name, String email, String phoneNumber) {
-        this.name = name;
+    public User(String email, String phoneNumber, boolean usageAcceptance) {
         this.email = email;
         this.phoneNumber = phoneNumber;
+        this.usageAcceptance = usageAcceptance;
     }
 
     public Long getId() {
@@ -38,14 +46,6 @@ public class User {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getEmail() {
@@ -71,6 +71,7 @@ public class User {
     public void setUsageAcceptance(boolean usageAcceptance) {
         this.usageAcceptance = usageAcceptance;
     }
+
 
     public List<Reservation> getReservations() {
         return reservations;

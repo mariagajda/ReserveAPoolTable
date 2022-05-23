@@ -6,4 +6,5 @@ import pl.coderslab.reserveapooltable.entity.User;
 
 public interface RegisteredUserRepository extends JpaRepository<RegisteredUser, Long> {
     RegisteredUser findUserByEmail(String email);
+    RegisteredUser findRegisteredUserByUsername(String username);
 }

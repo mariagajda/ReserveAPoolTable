@@ -1,16 +1,11 @@
 package pl.coderslab.reserveapooltable.entity;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import pl.coderslab.reserveapooltable.enums.PriceGroup;
-import pl.coderslab.reserveapooltable.repository.HolidayWorkdaysRepository;
-import pl.coderslab.reserveapooltable.repository.PriceRepository;
 
 import javax.persistence.*;
-import java.time.DayOfWeek;
+import javax.validation.constraints.Future;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.stream.Collectors;
 
 @Entity
 public class Reservation {
@@ -18,8 +13,11 @@ public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Future
     private LocalDate date;
+    @Future
     private LocalDateTime startDateTime;
+    @Future
     private LocalDateTime endDateTime;
     private PriceGroup priceGroup;
     private boolean isAvailable;
@@ -127,7 +125,7 @@ public class Reservation {
                 ", isAvailable=" + isAvailable +
                 ", pricePerReservation=" + pricePerReservation +
                 ", table no.=" + table.getTableNumber() +
-                ", user name=" + user.getName() +
+                ", user name=" + user.getEmail() +
                 '}';
     }
 }

@@ -13,3 +13,5 @@ INSERT INTO table_to_reserve (table_number) VALUES (3);
 INSERT INTO table_to_reserve (table_number) VALUES (4);
 INSERT INTO table_to_reserve (table_number) VALUES (5);
 
+INSERT INTO role (id, name) VALUES (NULL, 'ROLE_USER');
+INSERT INTO role (id, name) VALUES (NULL, 'ROLE_ADMIN');

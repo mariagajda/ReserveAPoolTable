@@ -10,19 +10,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.util.WebUtils;
 import pl.coderslab.reserveapooltable.entity.RegisteredUser;
-import pl.coderslab.reserveapooltable.entity.Reservation;
+import pl.coderslab.reserveapooltable.entity.ReservationsBasket;
 import pl.coderslab.reserveapooltable.entity.User;
 import pl.coderslab.reserveapooltable.repository.RegisteredUserRepository;
 import pl.coderslab.reserveapooltable.repository.ReservationRepository;
+import pl.coderslab.reserveapooltable.repository.ReservationsBasketRepository;
 import pl.coderslab.reserveapooltable.repository.UserRepository;
+import pl.coderslab.reserveapooltable.service.RegisteredUserService;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+
 
 @Controller
 @SessionAttributes({"reservationsToConfirm", "user", "priceSum"})
@@ -36,7 +37,20 @@ public class UserController {
     ReservationRepository reservationRepository;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    RegisteredUserService registeredUserService;
+    @Autowired
+    ReservationsBasketRepository reservationsBasketRepository;
 
+//    @RequestMapping("/create")
+//    @ResponseBody
+//    public String createRegisteredUser(){
+//        RegisteredUser registeredUser = new RegisteredUser();
+//        registeredUser.setUsername("admin");
+//        registeredUser.setPassword("admin");
+//        registeredUserService.saveRegisteredUser(registeredUser);
+//        return "admin";
+//    }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public String saveUser(Model model, HttpServletRequest request, @Valid User user, BindingResult result) {
@@ -46,62 +60,20 @@ public class UserController {
             return "user-data";
         }
         userRepository.save(user);
-        List<Reservation> reservationsToConfirmList = new ArrayList<>();
 
-        Arrays.stream(reservationsToConfirm).forEach(reservationId -> {
-            Reservation reservation = reservationRepository.findById(Long.parseLong(reservationId)).get();
-            reservationsToConfirmList.add(reservation);
-        });
+        Cookie cookie = WebUtils.getCookie(request, "basketId");
+        ReservationsBasket reservationsBasket = reservationsBasketRepository.findById(Long.parseLong(cookie.getValue())).get();
+        reservationsBasket.setUser(user);
+
         model.addAttribute("user", user);
-        model.addAttribute("reservationsToConfirm", reservationsToConfirmList);
-        if (paymentMethod.equals("transfer")) {
-            return "redirect:/reservation/payment/transfer";
-        } else {
-            return "redirect:/reservation/payment/inPlace";
-        }
-    }
-
-    @RequestMapping("/log")
-    public String logUser() {
-        return "login";
-    }
-
-    @RequestMapping(value = "/log", method = RequestMethod.POST)
-    public String checkUserLog(Model model, HttpServletRequest request) {
-        String[] reservationsToConfirm = request.getParameterValues("reservationsIdList");
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
-        RegisteredUser registeredUser = registeredUserRepository.findUserByEmail(email);
-        if (!email.equals(registeredUser.getEmail()) || !password.equals(registeredUser.getPassword())) {
-            return "user-log-failed";
-        }
-
-        List<Reservation> reservationsToConfirmList = new ArrayList<>();
-        Arrays.stream(reservationsToConfirm).forEach(reservationId -> {
-            Reservation reservation = reservationRepository.findById(Long.parseLong(reservationId)).get();
-            reservationsToConfirmList.add(reservation);
-        });
-        model.addAttribute("user", registeredUser);
-        model.addAttribute("reservationsToConfirm", reservationsToConfirmList);
-
-        return "redirect:/reservation/details";
+        model.addAttribute("reservationsToConfirm", reservationsBasket.getReservations());
+        model.addAttribute("paymentMethod", paymentMethod);
+        return "redirect:/payment";
     }
 
 
-    @RequestMapping("/register")
-    public String registerNewUser(Model model) {
-        model.addAttribute("registeredUser", new RegisteredUser());
-        return "user-register";
-    }
 
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public String saveRegisteredUser(@Valid RegisteredUser registeredUser, BindingResult result) {
-        if (result.hasErrors()) {
-            return "user-register";
-        }
-        registeredUserRepository.save(registeredUser);
-        return "redirect:/user/log";
-    }
+
 
 
 }

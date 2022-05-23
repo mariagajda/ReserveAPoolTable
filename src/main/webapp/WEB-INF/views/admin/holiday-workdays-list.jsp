@@ -1,5 +1,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<sec:authorize access="hasRole('ADMIN')">
 <html>
 <head>
     <title>Holiday-workdays</title>
@@ -34,3 +36,4 @@
 
 </body>
 </html>
+</sec:authorize>

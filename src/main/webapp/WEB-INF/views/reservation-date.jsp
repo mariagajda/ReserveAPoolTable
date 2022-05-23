@@ -1,5 +1,6 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -7,6 +8,10 @@
 
 </head>
 <body>
+<sec:authorize access="isAuthenticated()">
+    <p>Zalogowany jako: <sec:authentication property="principal.username"/></p>
+    <p>Posiada role: <sec:authentication property="authorities"/></p>
+</sec:authorize>
 <h1>Reserve a Service</h1>
 <form method="post">
     <label>Pick date
@@ -14,6 +19,9 @@
     </label>
     <input type=submit value="Check availability"/>
 </form>
+<sec:authorize access="hasRole('ADMIN')">
+    <div><a href="<c:url value="/admin/management-panel"/>">Admin Management Panel</a></div>
+</sec:authorize>
 
 <h3>Prices for table reservation:</h3>
 <table>

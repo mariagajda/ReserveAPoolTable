@@ -8,11 +8,11 @@
 </head>
 <body>
 <h1>Registration form</h1>
-<%--@elvariable id="registeredUser" type="pl.coderslab.reserveapooltable.entity.RegisteredUser"--%>
-<form:form action="/user/register" modelAttribute="registeredUser" method="post">
+<%--@elvariable id="registeredUserDTO" type="pl.coderslab.reserveapooltable.entity.RegisteredUserDTO"--%>
+<form:form action="/user/register" modelAttribute="registeredUserDTO" method="post">
     <label>Name:
-        <form:input path="name"/>
-        <form:errors path="name"/>
+        <form:input path="username"/>
+        <form:errors path="username"/>
     </label><br/>
     <label>Email:
         <form:input path="email"/>
@@ -23,15 +23,19 @@
         <form:errors path="phoneNumber"/>
     </label><br/>
     <label>Password:
-        <form:input path="password"></form:input>
+        <form:password path="password"></form:password>
         <form:errors path="password"></form:errors>
-    </label>
-
+    </label><br/>
+    <label>Confirm password:
+        <form:password path="matchingPassword"></form:password>
+        <form:errors path="matchingPassword"></form:errors>
+    </label><br/>
     <label>
         <form:checkbox path="usageAcceptance"/>
         <form:errors path="usageAcceptance"/>
         I accept the Terms of Use and Privacy Policy
     </label><br/>
+
     <input type="submit" value="Register"/>
 </form:form>
 

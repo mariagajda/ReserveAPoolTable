@@ -1,6 +1,7 @@
 package pl.coderslab.reserveapooltable.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Locale;
 
 @Controller
+@Secured("ROLE_ADMIN")
 @RequestMapping("/price")
 public class PriceController {
 
@@ -35,19 +37,19 @@ public class PriceController {
         model.addAttribute("fridayAfter18", priceRepository.findById(6L).get());
         model.addAttribute("saturdayAfter18", priceRepository.findById(7L).get());
         model.addAttribute("sundayHolidaysAfter18", priceRepository.findById(8L).get());
-        return "admin-price-list";
+        return "admin/price-list";
     }
 
    @RequestMapping("/edit/{id}")
     public String editPrice(Model model, @PathVariable Long id){
         model.addAttribute("price", priceRepository.findById(id).get());
-        return "admin-price-edit";
+        return "admin/price-edit";
    }
 
    @RequestMapping(value="/edit/{id}", method = RequestMethod.POST)
     public String savePrice(@PathVariable Long id, @Valid Price price, BindingResult result){
         if(result.hasErrors()){
-            return "admin-price-edit";
+            return "admin/price-edit";
         }
         priceRepository.save(price);
         return "redirect:/price/list";
