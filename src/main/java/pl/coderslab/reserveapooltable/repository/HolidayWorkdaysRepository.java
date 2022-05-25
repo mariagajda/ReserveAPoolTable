@@ -1,8 +1,8 @@
 package pl.coderslab.reserveapooltable.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import pl.coderslab.reserveapooltable.entity.HolidayWorkdays;
+import pl.coderslab.reserveapooltable.entity.HolidayWorkday;
 
-public interface HolidayWorkdaysRepository extends JpaRepository<HolidayWorkdays, Long> {
+public interface HolidayWorkdaysRepository extends JpaRepository<HolidayWorkday, Long> {
 
 }

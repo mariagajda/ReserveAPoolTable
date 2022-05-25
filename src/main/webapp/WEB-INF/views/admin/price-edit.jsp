@@ -12,11 +12,13 @@
     </style>
 </head>
 <body>
+<%@include file="../includes/appHeader.jsp" %>
+
 <%--@elvariable id="price" type="pl.coderslab.entity.Price"--%>
 <form:form modelAttribute="price" method="post">
-    <label for="priceGroup">PriceGroup: </label>
-    <form:input path="priceGroup" itemLabel="priceGroup"/>
-    <form:errors path="priceGroup" cssClass="error"/>
+    <label for="priceGroup">PriceGroup: ${price.priceGroup} </label>
+    <form:hidden path="priceGroup" itemLabel="priceGroup"/>
+<%--    <form:errors path="priceGroup" cssClass="error"/>--%>
     <br/>
     <label for="isNightTime">Is it nighttime price: </label>
     <form:input path="isNightTime" itemLabel="isNightTime"/>
@@ -31,6 +33,7 @@
 
     <input type="submit">
 </form:form>
+<a href="/price/list">Back to the price list</a>
 </body>
 </html>
 </sec:authorize>

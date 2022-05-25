@@ -5,9 +5,10 @@
 
 </head>
 <body>
+<%@include file="includes/appHeader.jsp" %>
 
-    <form action="<c:url value="/logout"/>" method="post">
-        <input type="submit" value="Wyloguj">
+    <form action="/logout" method="post">
+        <input type="submit" value="logout">
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
     </form>
 </body>

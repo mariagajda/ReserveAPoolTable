@@ -15,7 +15,7 @@ public class RegisteredUser extends User {
     private String username;
     @NotNull
     @NotBlank
-    @Pattern(regexp = "^(?=(.*[a-z]){1,})(?=(.*[A-Z]){1,})(?=(.*[0-9]){1,})(?=(.*[!@#$%^&*()\\-__+.]){1,}).{8,}$")
+    @Pattern(regexp = "^(?=(.*[a-z]){1,})(?=(.*[A-Z]){1,})(?=(.*[0-9]){1,})(?=(.*[!@#$%^&*()\\-__+.]){1,}).{8,}$", message = "{pattern.password}")
     private String password;
     private Double discount;
     private int enabled;
@@ -66,13 +66,6 @@ public class RegisteredUser extends User {
         this.discount = discount;
     }
 
-//    public int getEnabled() {
-//        return enabled;
-//    }
-//
-//    public void setEnabled(int enabled) {
-//        this.enabled = enabled;
-//    }
 
     public int getReservationsCounter() {
         return reservationsCounter;

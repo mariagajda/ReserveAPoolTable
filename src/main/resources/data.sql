@@ -12,6 +12,11 @@ INSERT INTO table_to_reserve (table_number) VALUES (2);
 INSERT INTO table_to_reserve (table_number) VALUES (3);
 INSERT INTO table_to_reserve (table_number) VALUES (4);
 INSERT INTO table_to_reserve (table_number) VALUES (5);
+INSERT INTO table_to_reserve (table_number) VALUES (6);
+INSERT INTO table_to_reserve (table_number) VALUES (7);
+INSERT INTO table_to_reserve (table_number) VALUES (8);
+INSERT INTO table_to_reserve (table_number) VALUES (9);
+INSERT INTO table_to_reserve (table_number) VALUES (10);
 
 INSERT INTO role (id, name) VALUES (NULL, 'ROLE_USER');
 INSERT INTO role (id, name) VALUES (NULL, 'ROLE_ADMIN');

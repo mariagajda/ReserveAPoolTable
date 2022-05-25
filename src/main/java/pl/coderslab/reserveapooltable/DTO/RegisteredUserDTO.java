@@ -2,7 +2,6 @@ package pl.coderslab.reserveapooltable.DTO;
 
 
 import pl.coderslab.reserveapooltable.validation.PasswordMatches;
-import pl.coderslab.reserveapooltable.validation.ValidEmail;
 
 import javax.validation.constraints.*;
 
@@ -20,12 +19,12 @@ public class RegisteredUserDTO {
 
     @NotNull
     @NotBlank
-    @Pattern(regexp = "\\d{9}")
+    @Pattern(regexp = "(?<!\\w)(\\(?(\\+|00)?48\\)?)?[ -]?\\d{3}[ -]?\\d{3}[ -]?\\d{3}(?!\\w)", message = "{pattern.phonenumber}")
     private String phoneNumber;
 
     @NotNull
     @NotBlank
-    @Pattern(regexp = "^(?=(.*[a-z]){1,})(?=(.*[A-Z]){1,})(?=(.*[0-9]){1,})(?=(.*[!@#$%^&*()\\-__+.]){1,}).{8,}$")
+    @Pattern(regexp = "^(?=(.*[a-z]){1,})(?=(.*[A-Z]){1,})(?=(.*[0-9]){1,})(?=(.*[!@#$%^&*()\\-__+.]){1,}).{8,}$", message = "{pattern.password}")
     private String password;
 
     @NotNull

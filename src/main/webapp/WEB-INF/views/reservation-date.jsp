@@ -5,13 +5,11 @@
 <html>
 <head>
     <title>Reserve a Service</title>
-
 </head>
+
 <body>
-<sec:authorize access="isAuthenticated()">
-    <p>Zalogowany jako: <sec:authentication property="principal.username"/></p>
-    <p>Posiada role: <sec:authentication property="authorities"/></p>
-</sec:authorize>
+<%@include file="includes/appHeader.jsp" %>
+
 <h1>Reserve a Service</h1>
 <form method="post">
     <label>Pick date
@@ -20,7 +18,7 @@
     <input type=submit value="Check availability"/>
 </form>
 <sec:authorize access="hasRole('ADMIN')">
-    <div><a href="<c:url value="/admin/management-panel"/>">Admin Management Panel</a></div>
+    <div><a href="/admin/management-panel">Admin Management Panel</a></div>
 </sec:authorize>
 
 <h3>Prices for table reservation:</h3>

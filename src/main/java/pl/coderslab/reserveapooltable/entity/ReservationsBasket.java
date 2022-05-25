@@ -1,7 +1,6 @@
 package pl.coderslab.reserveapooltable.entity;
 
 import javax.persistence.*;
-import javax.validation.constraints.Future;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -12,9 +11,11 @@ public class ReservationsBasket {
     private long id;
     private LocalDate date;
     private double priceSum;
+    private String paymentMethod;
     private boolean isConfirmed;
+    private boolean isPaid;
 
-    @OneToMany
+    @ManyToMany
     private List<Reservation> reservations;
 
     @ManyToOne
@@ -62,6 +63,22 @@ public class ReservationsBasket {
         isConfirmed = confirmed;
     }
 
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public boolean isPaid() {
+        return isPaid;
+    }
+
+    public void setPaid(boolean paid) {
+        isPaid = paid;
+    }
+
     public List<Reservation> getReservations() {
         return reservations;
     }
@@ -77,4 +94,5 @@ public class ReservationsBasket {
     public void setUser(User user) {
         this.user = user;
     }
+
 }

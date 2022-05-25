@@ -8,6 +8,8 @@
 
 </head>
 <body>
+<%@include file="../includes/appHeader.jsp" %>
+
 <h3>Prices for table reservation:</h3>
 <table>
     <thead>
@@ -38,7 +40,6 @@
 </table>
 <p><sup>*</sup>holidays on Friday or Saturday = Friday's or Saturday's prices</p>
 
-<p>For registered users: if you have more than 5 reservation we have for You 5% discount from regular prices!</p>
 </body>
 </html>
 </sec:authorize>

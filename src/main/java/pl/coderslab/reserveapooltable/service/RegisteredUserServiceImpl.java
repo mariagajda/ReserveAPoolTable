@@ -1,6 +1,5 @@
 package pl.coderslab.reserveapooltable.service;
 
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.coderslab.reserveapooltable.DTO.RegisteredUserDTO;
@@ -13,10 +12,12 @@ import pl.coderslab.reserveapooltable.repository.RoleRepository;
 import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Transactional
-public class RegisteredUserServiceImpl implements RegisteredUserService, IRegisteredUserService {
+public class RegisteredUserServiceImpl implements RegisteredUserService, RegisteredUserDTOService {
     private final RegisteredUserRepository registeredUserRepository;
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder passwordEncoder;
@@ -33,14 +34,25 @@ public class RegisteredUserServiceImpl implements RegisteredUserService, IRegist
         return registeredUserRepository.findRegisteredUserByUsername(username);
     }
 
-//    @Override
-//    public void saveRegisteredUser(RegisteredUser registeredUser) {
-//        registeredUser.setPassword(passwordEncoder.encode(registeredUser.getPassword()));
-//        registeredUser.setEnabled(1);
-//        Role userRole = roleRepository.findByName("ROLE_USER");
-//        registeredUser.setRoles(new HashSet<>(Arrays.asList(userRole)));
-//        registeredUserRepository.save(registeredUser);
-//    }
+    @Override
+    public void saveRegisteredUser(RegisteredUser registeredUser) {
+        registeredUser.setPassword(passwordEncoder.encode(registeredUser.getPassword()));
+        registeredUser.setUsername(registeredUser.getUsername());
+        registeredUser.setEnabled(1);
+        Optional<Set<Role>> roleOptional = Optional.ofNullable(registeredUser.getRoles());
+        Role userRole = roleRepository.findByName("ROLE_USER");
+        if(roleOptional.equals(Optional.empty())) {
+            registeredUser.setRoles(new HashSet<>(Arrays.asList(userRole)));
+        } else {
+            Set<Role> roleSet = registeredUser.getRoles();
+            roleSet.add(userRole);
+            registeredUser.setRoles(roleSet);
+        }
+        registeredUser.setEmail(registeredUser.getEmail());
+        registeredUser.setPhoneNumber(registeredUser.getPhoneNumber());
+        registeredUser.setUsageAcceptance(registeredUser.isUsageAcceptance());
+        registeredUserRepository.save(registeredUser);
+    }
 
     public RegisteredUser registerNewUserAccount(RegisteredUserDTO registeredUserDTO) throws UserAlreadyExistException {
         if (emailExist(registeredUserDTO.getEmail())) {
@@ -56,9 +68,10 @@ public class RegisteredUserServiceImpl implements RegisteredUserService, IRegist
         registeredUser.setEnabled(1);
         Role userRole = roleRepository.findByName("ROLE_USER");
         registeredUser.setRoles(new HashSet<>(Arrays.asList(userRole)));
-       return registeredUserRepository.save(registeredUser);
+        return registeredUserRepository.save(registeredUser);
 
     }
+
     private boolean emailExist(String email) {
         return registeredUserRepository.findUserByEmail(email) != null;
     }

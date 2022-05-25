@@ -1,5 +1,16 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<h2>Online payment page</h2>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<html>
+<head>
 
-<a href="<c:url value="/reservation/payment/succeeded"/>">Reservation paid</a>
-<a href="<c:url value="/reservation/payment/failed"/>">Reservation unpaid</a>
+</head>
+<body>
+<%@include file="includes/appHeader.jsp" %>
+
+<h2>Online payment page</h2>
+<p> Amount to be paid: <c:out value="${reservationsBasket.priceSum}"/> PLN</p>
+
+<a href="/reservation/succeeded">Reservation paid</a>
+<a href="/reservation/failed">Reservation unpaid</a>
+</body>
+</html>

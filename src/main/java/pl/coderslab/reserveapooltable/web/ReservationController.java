@@ -2,59 +2,41 @@ package pl.coderslab.reserveapooltable.web;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.WebUtils;
 import pl.coderslab.reserveapooltable.entity.*;
-import pl.coderslab.reserveapooltable.enums.PriceGroup;
 import pl.coderslab.reserveapooltable.repository.*;
 import pl.coderslab.reserveapooltable.service.CurrentUser;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.text.SimpleDateFormat;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
-//@SessionAttributes({"reservationsToConfirm", "user", "priceSum"})
 @RequestMapping("/reservation")
 public class ReservationController {
     private static final Logger logger = LoggerFactory.getLogger(ReservationController.class);
 
-    @Autowired
-    private ReservationRepository reservationRepository;
+    private final ReservationRepository reservationRepository;
+    private final TableToReserveRepository tableToReserveRepository;
+    private final PriceRepository priceRepository;
+    private final ReservationsBasketRepository reservationsBasketRepository;
+    private final RegisteredUserRepository registeredUserRepository;
 
-    @Autowired
-    private TableToReserveRepository tableToReserveRepository;
-
-    @Autowired
-    private PriceRepository priceRepository;
-
-    @Autowired
-    private HolidayWorkdaysRepository holidayWorkdaysRepository;
-
-    @Autowired
-    private RegisteredUserRepository registeredUserRepository;
-
-    @Autowired
-    private ReservationsBasketRepository reservationsBasketRepository;
+    public ReservationController(ReservationRepository reservationRepository, TableToReserveRepository tableToReserveRepository, PriceRepository priceRepository, ReservationsBasketRepository reservationsBasketRepository, RegisteredUserRepository registeredUserRepository) {
+        this.reservationRepository = reservationRepository;
+        this.tableToReserveRepository = tableToReserveRepository;
+        this.priceRepository = priceRepository;
+        this.reservationsBasketRepository = reservationsBasketRepository;
+        this.registeredUserRepository = registeredUserRepository;
+    }
 
 
     @RequestMapping("/date")
@@ -71,8 +53,10 @@ public class ReservationController {
     }
 
     @RequestMapping(value = "/date", method = RequestMethod.POST)
-    public String saveDateAndPickTableAndHour(@RequestParam String dateStr, Model model) {
+    public String saveDateAndPickTableAndHour(@RequestParam String dateStr,
+                                              Model model) {
         model.addAttribute("date", dateStr);
+        logger.info("DATE STR: " + dateStr);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date = LocalDate.parse(dateStr, formatter);
         model.addAttribute("tables", tableToReserveRepository.findAll().stream().sorted(Comparator.comparingInt(TableToReserve::getTableNumber)).collect(Collectors.toList()));
@@ -82,7 +66,10 @@ public class ReservationController {
     }
 
     @RequestMapping(value = "/datetablesandhours", method = RequestMethod.POST)
-    public String saveTablesAndHours(HttpServletRequest request, Model model, @AuthenticationPrincipal CurrentUser customUser, HttpServletResponse response) {
+    public String saveTablesAndHours(HttpServletRequest request,
+                                     @AuthenticationPrincipal CurrentUser customUser,
+                                     HttpServletResponse response) {
+
         String[] pickedReservationsId = request.getParameterValues("pickedReservations");
         List<Reservation> reservationsList = new ArrayList<>();
         double priceSum = 0.0;
@@ -95,20 +82,15 @@ public class ReservationController {
         }
         LocalDate date = reservationsList.get(0).getDate();
         ReservationsBasket reservationsBasket = new ReservationsBasket(date, priceSum, reservationsList);
-        if (customUser.getUser() != null) {
-            reservationsBasket.setUser(customUser.getUser());
-            model.addAttribute("isLoggedIn", true);
-        } else {
-            model.addAttribute("isLoggedIn", false);
+        Optional<RegisteredUser> user = Optional.ofNullable(customUser).map(custom -> custom.getUser());
+        if (!user.equals(Optional.empty())) {
+            reservationsBasket.setUser(user.get());
         }
         reservationsBasketRepository.save(reservationsBasket);
         Cookie cookie = new Cookie("basketId", String.valueOf(reservationsBasket.getId()));
         cookie.setPath("/");
         response.addCookie(cookie);
 
-        model.addAttribute("date", date);
-        model.addAttribute("reservationsToConfirm", reservationsList);
-        model.addAttribute("priceSum", priceSum);
         return "redirect:/reservation/summary";
     }
 
@@ -118,73 +100,78 @@ public class ReservationController {
         return "reservation-summary";
     }
 
-    @RequestMapping(value = "/summary", method = RequestMethod.POST)
-    public String saveReservationsDetails(Model model, HttpServletRequest request) {
-        String paymentMethod = request.getParameter("paymentMethod");
-        model.addAttribute("paymentMethod", paymentMethod);
-       return "redirect:/payment";
-    }
     @RequestMapping("/payment")
-    public String setPaymentMethod(Model model){
-        if (model.getAttribute("paymentMethod").equals("transfer")) {
-            return "redirect:/reservation/payment/transfer";
+    public String setPaymentMethod(HttpServletRequest request) {
+        String paymentMethodStr = request.getParameter("paymentMethod");
+        ReservationsBasket reservationsBasket = reservationsBasketRepository.findById(Long.parseLong(WebUtils.getCookie(request, "basketId").getValue())).get();
+        if (reservationsBasket.getPaymentMethod() != null) {
+            if (reservationsBasket.getPaymentMethod().equals("transfer")) {
+                return "redirect:/reservation/payment/transfer";
+            } else {
+                return "redirect:/reservation/payment/inPlace";
+            }
         } else {
-            return "redirect:/reservation/payment/inPlace";
+            reservationsBasket.setPaymentMethod(paymentMethodStr);
+            reservationsBasketRepository.save(reservationsBasket);
+            if (paymentMethodStr.equals("transfer")) {
+                return "redirect:/reservation/payment/transfer";
+            } else {
+                return "redirect:/reservation/payment/inPlace";
+            }
         }
     }
 
 
     @RequestMapping(value = "/payment/transfer")
-    public String payForReservationOnline(Model model) {
+    public String payForReservationOnline() {
 
         return "payment-online";
     }
 
     @RequestMapping(value = "/payment/inPlace")
-    public String payForReservationLater(Model model) {
+    public String payForReservationLater() {
 
         return "payment-in-place";
     }
 
-    @RequestMapping(value = "/payment/succeeded")
-    public String payWithSuccess(HttpSession session) {
-        User user = (User) session.getAttribute("user");
-        List<Reservation> reservationsToConfirm = (List<Reservation>) session.getAttribute("reservationsToConfirm");
-        reservationsToConfirm.stream().forEach(reservation -> {
-            reservation.setUser(user);
+
+
+    @RequestMapping(value = "/succeeded")
+    public String payWithSuccess(HttpServletRequest request) {
+        ReservationsBasket reservationsBasket = reservationsBasketRepository.findById(Long.parseLong(WebUtils.getCookie(request, "basketId").getValue())).get();
+
+        reservationsBasket.getReservations().stream().forEach(reservation -> {
             reservation.setAvailable(false);
             reservationRepository.save(reservation);
-            if (user instanceof RegisteredUser) {
-                RegisteredUser registeredUser = (RegisteredUser) user;
-                registeredUser.setReservationsCounter(registeredUser.getReservationsCounter() + 1);
-            }
         });
+        reservationsBasket.setConfirmed(true);
+        if(reservationsBasket.getPaymentMethod().equals("transfer")){
+            reservationsBasket.setPaid(true);
+        }
+        reservationsBasketRepository.save(reservationsBasket);
+        User user = reservationsBasket.getUser();
+        if (user instanceof RegisteredUser) {
+            RegisteredUser registeredUser = (RegisteredUser) user;
+            registeredUser.setReservationsCounter(registeredUser.getReservationsCounter() + 1);
+            if(registeredUser.getReservationsCounter() >= 5){
+                registeredUser.setDiscount(0.05);
+            }
+            registeredUserRepository.save(registeredUser);
+        }
 
         return "reservation-succeeded";
     }
 
-    @RequestMapping(value = "/payment-in-place/succeeded")
-    public String payInPlaceReservationSuccedded(HttpSession session) {
-        User user = (User) session.getAttribute("user");
-        List<Reservation> reservationsToConfirm = (List<Reservation>) session.getAttribute("reservationsToConfirm");
-        reservationsToConfirm.stream().forEach(reservation -> {
-            logger.info("Reservation before user: " + reservation.toString());
-            reservation.setUser(user);
-            reservation.setAvailable(false);
-            reservationRepository.save(reservation);
-            if (user instanceof RegisteredUser) {
-                RegisteredUser registeredUser = (RegisteredUser) user;
-                registeredUser.setReservationsCounter(registeredUser.getReservationsCounter() + 1);
-            }
-        });
-
-        return "reservation-succeeded";
-    }
-
-    @RequestMapping(value = "/payment/failed")
+    @RequestMapping(value = "/failed")
     public String payWithoutSuccess() {
-        return "payment-failed";
+        return "reservation-failed";
     }
 
-
+    @ModelAttribute("reservationsBasket")
+    public ReservationsBasket getReservationsToConfirm(HttpServletRequest request) {
+        Optional<Cookie> cookieOptional = Optional.ofNullable(WebUtils.getCookie(request, "basketId"));
+        if(!cookieOptional.equals(Optional.empty())){
+            return reservationsBasketRepository.findById(Long.parseLong(cookieOptional.get().getValue())).get();
+        } else return new ReservationsBasket();
+    }
 }

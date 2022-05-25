@@ -38,12 +38,12 @@ public class Price {
         this.priceGroup = priceGroup;
     }
 
-    public boolean isNightTime() {
+    public boolean getIsNightTime() {
         return isNightTime;
     }
 
     public void setNightTime(boolean nightTime) {
-        isNightTime = nightTime;
+        this.isNightTime = nightTime;
     }
 
     public double getPricePerHour() {

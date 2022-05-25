@@ -22,7 +22,7 @@ public class User {
 
     @NotNull
     @NotBlank
-    @Pattern(regexp = "\\d{9}")
+    @Pattern(regexp = "(?<!\\w)(\\(?(\\+|00)?48\\)?)?[ -]?\\d{3}[ -]?\\d{3}[ -]?\\d{3}(?!\\w)", message = "{pattern.phonenumber}")
     private String phoneNumber;
 
     @AssertTrue

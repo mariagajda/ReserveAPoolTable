@@ -8,6 +8,7 @@
 
 </head>
 <body>
+<%@include file="../includes/appHeader.jsp" %>
 <h3>Holiday - workdays</h3>
 <a href="/holiday-workdays/add">Add new holiday-workday</a>
 <table>
