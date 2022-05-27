@@ -1,6 +1,7 @@
 package pl.coderslab.reserveapooltable.DTO;
 
 
+import pl.coderslab.reserveapooltable.validation.CustomValidEmail;
 import pl.coderslab.reserveapooltable.validation.PasswordMatches;
 
 import javax.validation.constraints.*;
@@ -14,7 +15,7 @@ public class RegisteredUserDTO {
 
     @NotNull
     @NotBlank
-    @Email
+    @CustomValidEmail
     private String email;
 
     @NotNull

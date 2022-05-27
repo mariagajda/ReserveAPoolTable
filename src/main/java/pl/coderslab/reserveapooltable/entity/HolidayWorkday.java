@@ -15,7 +15,7 @@ public class HolidayWorkday {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Future
-    @Pattern(regexp = "^\\d{4}\\-(0[1-9]|1[012])\\-(0[1-9]|[12][0-9]|3[01])$", message = "{pattern.date}")
+//    @Pattern(regexp = "^\\d{4}\\-(0[1-9]|1[012])\\-(0[1-9]|[12][0-9]|3[01])$", message = "{pattern.date}")
     private LocalDate date;
 
     public Long getId() {

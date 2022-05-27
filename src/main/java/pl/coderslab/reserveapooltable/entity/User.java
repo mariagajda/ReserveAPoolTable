@@ -1,5 +1,7 @@
 package pl.coderslab.reserveapooltable.entity;
 
+import pl.coderslab.reserveapooltable.validation.CustomValidEmail;
+
 import javax.persistence.*;
 import javax.persistence.GenerationType;
 import javax.validation.constraints.*;
@@ -15,9 +17,15 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true, length = 60)
     @NotNull
     @NotBlank
-    @Email
+    @Size(min = 2, max = 30)
+    private String username;
+
+    @NotNull
+    @NotBlank
+    @CustomValidEmail
     private String email;
 
     @NotNull
@@ -34,7 +42,8 @@ public class User {
     public User() {
     }
 
-    public User(String email, String phoneNumber, boolean usageAcceptance) {
+    public User(String username, String email, String phoneNumber, boolean usageAcceptance) {
+        this.username = username;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.usageAcceptance = usageAcceptance;
@@ -46,6 +55,14 @@ public class User {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getEmail() {

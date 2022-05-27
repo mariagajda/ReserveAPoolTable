@@ -16,7 +16,7 @@
     You resign from your reservation.
 </c:if>
 
-<a href="/reservation/date">Homepage</a>
+<a href="/failed/deleteCookie">Homepage</a>
 </body>
 </html>
 

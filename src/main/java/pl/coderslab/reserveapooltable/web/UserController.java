@@ -45,7 +45,7 @@ public class UserController {
                            BindingResult result) {
         String paymentMethod = request.getParameter("paymentMethod");
         if (result.hasErrors()) {
-            return "user-data";
+            return "user-register";
         }
         userRepository.save(user);
 

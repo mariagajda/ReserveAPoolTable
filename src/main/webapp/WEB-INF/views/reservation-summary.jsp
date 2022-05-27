@@ -11,6 +11,12 @@
             color: red;
         }
     </style>
+    <style>
+        .discount {
+            color: red;
+            text-decoration: line-through;
+        }
+    </style>
 </head>
 <body>
 <%@include file="includes/appHeader.jsp" %>
@@ -49,7 +55,6 @@
         <form action="/reservation/payment" method="get">
             <label>Payment method:
                 <select name="paymentMethod">
-                    <option value="">Select...</option>
                     <option value="transfer">Online payment</option>
                     <option value="inPlace">Pay in place</option>
                 </select>
@@ -65,9 +70,12 @@
         <div><h4>Fill a form:</h4>
                 <%--@elvariable id="user" type="pl.coderslab.reserveapooltable.entity.User"--%>
             <form:form action="/user/add" modelAttribute="user" method="post">
-                <label>Email:
+                <label>Username:
+                    <form:input path="username"/>
+                    <form:errors path="username" cssClass="error"/>
+                </label><br/><label>Email:
                     <form:input path="email"/>
-                    <form:errors path="email"/>
+                    <form:errors path="email" cssClass="error"/>
                 </label><br/>
                 <label>Phone number:
                     <form:input path="phoneNumber"/>
@@ -75,7 +83,6 @@
                 </label><br/>
                 <label>Payment method:
                     <select name="paymentMethod">
-                        <option value="">Select...</option>
                         <option value="transfer">Online payment</option>
                         <option value="inPlace">Pay in place</option>
                     </select>

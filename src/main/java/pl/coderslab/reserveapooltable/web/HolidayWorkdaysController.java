@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import pl.coderslab.reserveapooltable.entity.HolidayWorkday;
 import pl.coderslab.reserveapooltable.repository.HolidayWorkdaysRepository;
+import pl.coderslab.reserveapooltable.repository.ReservationRepository;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 
 @Controller
 @Secured("ROLE_ADMIN")
@@ -18,9 +20,11 @@ import javax.validation.Valid;
 public class HolidayWorkdaysController {
 
     private final HolidayWorkdaysRepository holidayWorkdaysRepository;
+    private final ReservationRepository reservationRepository;
 
-    public HolidayWorkdaysController(HolidayWorkdaysRepository holidayWorkdaysRepository) {
+    public HolidayWorkdaysController(HolidayWorkdaysRepository holidayWorkdaysRepository, ReservationRepository reservationRepository) {
         this.holidayWorkdaysRepository = holidayWorkdaysRepository;
+        this.reservationRepository = reservationRepository;
     }
 
     @RequestMapping("/list")
@@ -32,6 +36,8 @@ public class HolidayWorkdaysController {
     @RequestMapping("/add")
     public String addHolidayWorkday(Model model) {
         model.addAttribute("holidayWorkday", new HolidayWorkday());
+        LocalDate lastReservationDateInDatabase = reservationRepository.findAllSortByReservationDateDesc().get(0).getDate();
+        model.addAttribute("minDate", lastReservationDateInDatabase.plusDays(1));
         return "admin/holiday-workday-add";
     }
 
@@ -47,7 +53,7 @@ public class HolidayWorkdaysController {
     @RequestMapping("/delete/{id}")
     public String removeHolidayWorkday(@PathVariable Long id) {
         holidayWorkdaysRepository.deleteById(id);
-        return "holiday-workdays/list";
+        return "redirect:/holiday-workdays/list";
     }
 
 }

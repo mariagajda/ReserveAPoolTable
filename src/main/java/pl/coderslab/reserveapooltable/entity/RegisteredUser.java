@@ -8,11 +8,7 @@ import java.util.Set;
 @Entity
 @DiscriminatorValue("registered")
 public class RegisteredUser extends User {
-    @Column(nullable = false, unique = true, length = 60)
-    @NotNull
-    @NotBlank
-    @Size(min = 2, max = 30)
-    private String username;
+
     @NotNull
     @NotBlank
     @Pattern(regexp = "^(?=(.*[a-z]){1,})(?=(.*[A-Z]){1,})(?=(.*[0-9]){1,})(?=(.*[!@#$%^&*()\\-__+.]){1,}).{8,}$", message = "{pattern.password}")
@@ -34,21 +30,20 @@ public class RegisteredUser extends User {
         reservationsCounter = 0;
     }
 
-    public RegisteredUser(String email, String phoneNumber, boolean usageAcceptance, String username, String password) {
-        super(email, phoneNumber, usageAcceptance);
-        this.username = username;
+    public RegisteredUser(String username, String email, String phoneNumber, boolean usageAcceptance, String password) {
+        super(username, email, phoneNumber, usageAcceptance);
         this.password = password;
         discount = 0.0;
         reservationsCounter = 0;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
+//    public String getUsername() {
+//        return username;
+//    }
+//
+//    public void setUsername(String username) {
+//        this.username = username;
+//    }
 
     public String getPassword() {
         return password;

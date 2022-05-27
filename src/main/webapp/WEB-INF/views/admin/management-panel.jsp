@@ -11,18 +11,26 @@
     </head>
     <body>
     <%@include file="../includes/appHeader.jsp" %>
-
+    <h3>
+        <a href="/holiday-workdays/list">Holiday-workdays</a>
+    </h3>
+    <h3>
+        <a href="/price/list">Prices</a>
+    </h3>
+    <h3>Reservations terms</h3>
     <div>
         <p>You have set possible reservations up to ${lastReservationDateInDatabase} ${lastReservationDateWarning}.</p>
-        <h3>If you want to add possible reservations fill the form:</h3>
+        <p>If you want to add new possible reservations fill the form below. </p>
+        <p>Remember to add holiday workdays for new period before adding new available reservations to set right prices group for
+            this days. If you want to change prices also do it before adding reservations. It will be impossible to change it afterwards.</p>
         <div>
+            <h4>Reservations terms for new period:</h4>
             <form action="/admin/management-panel" method="post">
                 <label>Reservations for period from
-<%--                    <fmt:formatDate value="${holidayWorkday.date}" var="dateString" pattern="yyyy-MM-dd"/>--%>
-                    <input type="date" name="firstDay" value="${firstReservationDate}"> to:
-                    <input type="date" name="lastDay" /></label>
+                    <input type="date" name="firstDay" value="${firstReservationDate}" min="${minFrom}"> to:
+                    <input type="date" name="lastDay" value="${firstReservationDate}" min="${minFrom}"/></label><br/>
                 <label>Minimal duration of reservation: <input type="number" name="duration" value="30"/> min </label>
-                <h4>Openings hours:</h4>
+                <h4>Openings hours for new period:</h4>
                 <p>Monday - Thursday <label>From: <input type="time" name="monToThuTimeFrom"
                                                          value="15:00"></label><label> To: <input
                         type="time" name="monToThuTimeTo" value="01:00"></label></p>
@@ -37,12 +45,7 @@
             </form>
         </div>
     </div>
-    <div>
-        <a href="/holiday-workdays/list">Holiday-workdays</a>
-    </div>
-    <div>
-        <a href="/price/list">Prices</a>
-    </div>
+
     <div>
         <a href="/reservation/date">Reserve Service as Admin</a>
     </div>

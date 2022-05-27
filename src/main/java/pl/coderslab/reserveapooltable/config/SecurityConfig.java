@@ -18,35 +18,37 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         http
+                .authorizeRequests().antMatchers("/static/**", "/resources/**", "/resources/static/**").permitAll();
+        http
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/holiday-workdays/**").hasRole("ADMIN")
                 .antMatchers("/price/**").hasRole("ADMIN")
-//                .antMatchers("/").permitAll()
-//                .antMatchers("/reservation/**").permitAll()
-//                .antMatchers( "/user/**").permitAll()
-//                .antMatchers("/login").permitAll()
+//
                 .and()
                 .formLogin()
                 .loginPage("/login")
                 .defaultSuccessUrl("/reservation/date", false)
-//                .failureUrl("/user/log-failed")
+                .failureUrl("/user/log-failed")
                 //.failureHandler(authenticationFailureHandler())
                 .and()
                 .logout()
-//                .logoutSuccessUrl("/")
-//                .deleteCookies("JSESSIONID", "basketId")
-                //.logoutSuccessHandler(logoutSuccessHandler())
+                .logoutSuccessUrl("/")
+                .deleteCookies("JSESSIONID", "basketId")
+//                .logoutSuccessHandler(logoutSuccessHandler())
 //                .permitAll()
-//                .and().exceptionHandling().accessDeniedPage("/errors/403")
-                ;
+                .and().exceptionHandling().accessDeniedPage("/errors/403")
+
+        ;
 
     }
+
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public SpringDataUserDetailsService customUserDetailsService() {
         return new SpringDataUserDetailsService();

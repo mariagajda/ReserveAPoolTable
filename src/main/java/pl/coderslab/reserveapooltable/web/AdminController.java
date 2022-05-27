@@ -50,12 +50,15 @@ public class AdminController {
     public String manageReservations(Model model) {
         if (reservationRepository.findAllSortByReservationDateDesc().size() == 0) {
             model.addAttribute("lastReservationDateWarning", "*No reservations - database is empty*");
-            model.addAttribute("firstReservationDateTime", LocalDateTime.now().plusDays(1));
+            model.addAttribute("firstReservationDate", LocalDate.now().plusDays(1));
         } else {
             LocalDate lastReservationDateInDatabase = reservationRepository.findAllSortByReservationDateDesc().get(0).getDate();
             model.addAttribute("lastReservationDateInDatabase", lastReservationDateInDatabase);
             model.addAttribute("firstReservationDate", LocalDate.from(lastReservationDateInDatabase).plusDays(1));
         }
+        LocalDate lastReservationDateInDatabase = reservationRepository.findAllSortByReservationDateDesc().get(0).getDate();
+        model.addAttribute("minFrom", lastReservationDateInDatabase.plusDays(1));
+        model.addAttribute("minTo", lastReservationDateInDatabase.plusDays(1));
 
         return "admin/management-panel";
     }

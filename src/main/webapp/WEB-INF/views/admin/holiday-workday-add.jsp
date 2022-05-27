@@ -13,15 +13,14 @@
 <%@include file="../includes/appHeader.jsp" %>
 <h1>Add Holiday-Workday</h1>
     <%--@elvariable id="holidayWorkday" type="pl.coderslab.reserveapooltable.entity.HolidayWorkday"--%>
-<form:form action="/holiday-workdays/add" modelAttribute="holidayWorkday" method="post">
+<form action="/holiday-workdays/add" method="post">
     <label>Date:
-        <fmt:formatDate value="${holidayWorkday.date}" var="dateString" pattern="yyyy-MM-dd" />
-        <form:input path="date" value="${dateString}"/>
-        <form:errors path="date"/>
+        <input type="date" required name="date" min="${minDate}"/>
+
     </label><br/>
 
     <input type="submit" value="Add"/>
-</form:form>
+</form>
 </body>
 </html>
 </sec:authorize>

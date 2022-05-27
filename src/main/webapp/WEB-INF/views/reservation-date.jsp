@@ -11,12 +11,20 @@
 <%@include file="includes/appHeader.jsp" %>
 
 <h1>Reserve a Service</h1>
-<form method="post">
-    <label>Pick date
-        <input type="date" name="dateStr"/>
-    </label>
-    <input type=submit value="Check availability"/>
-</form>
+<c:choose>
+    <c:when test="${noReservations}">
+        <p>We are sorry, but we don't have available hours and tables to reserve</p>
+    </c:when>
+<c:otherwise>
+    <form method="post">
+        <label>Pick date
+            <input type="date" name="dateStr" min="${minDate}" max="${maxDate}"/>
+        </label>
+        <input type=submit value="Check availability"/>
+    </form>
+</c:otherwise>
+</c:choose>
+
 <sec:authorize access="hasRole('ADMIN')">
     <div><a href="/admin/management-panel">Admin Management Panel</a></div>
 </sec:authorize>

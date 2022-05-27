@@ -6,10 +6,11 @@
 
 <body>
 <%@include file="includes/appHeader.jsp" %>
-<h3>You choose to pay in Club directly before play</h3>
+
+<p>You choose to pay in Club directly before play</p>
 <p>You are obliged to pay ${reservationsBasket.priceSum} PLN</p>
 
-<a href="/reservation/succeeded">Click here to finish your reservation</a>
+<h3><a href="/reservation/succeeded">Click here to finish your reservation</a></h3>
 <a href="/reservation/failed">Click here to resign</a>
 
 </body>

@@ -15,6 +15,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -49,6 +50,14 @@ public class ReservationController {
         model.addAttribute("saturdayAfter18", priceRepository.findById(6L).get());
         model.addAttribute("sundayHolidaysBefore18", priceRepository.findById(7L).get());
         model.addAttribute("sundayHolidaysAfter18", priceRepository.findById(8L).get());
+        if (reservationRepository.findAllSortByReservationDateDesc().size() == 0) {
+            model.addAttribute("noReservations", true);
+        } else {
+            LocalDate lastReservationDateInDatabase = reservationRepository.findAllSortByReservationDateDesc().get(0).getDate();
+            model.addAttribute("maxDate", lastReservationDateInDatabase);
+            model.addAttribute("minDate", LocalDate.now().plusDays(1));
+            model.addAttribute("noReservations", false);
+        }
         return "reservation-date";
     }
 
@@ -137,11 +146,12 @@ public class ReservationController {
 
 
     @RequestMapping(value = "/succeeded")
-    public String payWithSuccess(HttpServletRequest request) {
+    public String reserveWithSuccess(HttpServletRequest request, HttpServletResponse response) {
         ReservationsBasket reservationsBasket = reservationsBasketRepository.findById(Long.parseLong(WebUtils.getCookie(request, "basketId").getValue())).get();
 
         reservationsBasket.getReservations().stream().forEach(reservation -> {
             reservation.setAvailable(false);
+            reservation.setUser(reservationsBasket.getUser());
             reservationRepository.save(reservation);
         });
         reservationsBasket.setConfirmed(true);
@@ -153,19 +163,34 @@ public class ReservationController {
         if (user instanceof RegisteredUser) {
             RegisteredUser registeredUser = (RegisteredUser) user;
             registeredUser.setReservationsCounter(registeredUser.getReservationsCounter() + 1);
+            List<ReservationsBasket> reservationsHistory = registeredUser.getReservationsHistory();
+            reservationsHistory.add(reservationsBasket);
             if(registeredUser.getReservationsCounter() >= 5){
                 registeredUser.setDiscount(0.05);
             }
             registeredUserRepository.save(registeredUser);
         }
+        Cookie cookie = WebUtils.getCookie(request,"basketId");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
 
         return "reservation-succeeded";
     }
 
     @RequestMapping(value = "/failed")
-    public String payWithoutSuccess() {
+    public String reserveWithoutSuccess() {
         return "reservation-failed";
     }
+
+    @RequestMapping(value = "/failed/deleteCookie")
+    public String reserveWithoutSuccess(HttpServletRequest request, HttpServletResponse response) {
+        Cookie cookie = WebUtils.getCookie(request,"basketId");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return "redirect:/reservation/date";
+    }
+
+
 
     @ModelAttribute("reservationsBasket")
     public ReservationsBasket getReservationsToConfirm(HttpServletRequest request) {

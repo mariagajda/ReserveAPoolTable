@@ -9,8 +9,10 @@
 </head>
 <body>
 <%@include file="../includes/appHeader.jsp" %>
+<p><a href="/admin/management-panel">Back to management panel</a><br/></p>
 <h3>Holiday - workdays</h3>
-<a href="/holiday-workdays/add">Add new holiday-workday</a>
+<p><a href="/holiday-workdays/add">Add new holiday-workday</a><br/></p>
+
 <table>
     <thead>
     <tr>
