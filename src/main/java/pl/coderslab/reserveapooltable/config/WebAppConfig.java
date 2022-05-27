@@ -7,6 +7,6 @@ public class WebAppConfig implements WebMvcConfigurer {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry){
-        registry.addViewController("/errors/403").setViewName("/errors/403");
+        registry.addViewController("/errors/403").setViewName("403");
     }
 }

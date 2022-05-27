@@ -31,16 +31,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/login")
                 .defaultSuccessUrl("/reservation/date", false)
                 .failureUrl("/user/log-failed")
-                //.failureHandler(authenticationFailureHandler())
                 .and()
                 .logout()
                 .logoutSuccessUrl("/")
                 .deleteCookies("JSESSIONID", "basketId")
-//                .logoutSuccessHandler(logoutSuccessHandler())
-//                .permitAll()
-                .and().exceptionHandling().accessDeniedPage("/errors/403")
-
-        ;
+                .and().exceptionHandling().accessDeniedPage("/errors/403");
 
     }
 

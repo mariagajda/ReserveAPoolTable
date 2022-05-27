@@ -55,10 +55,9 @@ public class AdminController {
             LocalDate lastReservationDateInDatabase = reservationRepository.findAllSortByReservationDateDesc().get(0).getDate();
             model.addAttribute("lastReservationDateInDatabase", lastReservationDateInDatabase);
             model.addAttribute("firstReservationDate", LocalDate.from(lastReservationDateInDatabase).plusDays(1));
+            model.addAttribute("minFrom", lastReservationDateInDatabase.plusDays(1));
+            model.addAttribute("minTo", lastReservationDateInDatabase.plusDays(1));
         }
-        LocalDate lastReservationDateInDatabase = reservationRepository.findAllSortByReservationDateDesc().get(0).getDate();
-        model.addAttribute("minFrom", lastReservationDateInDatabase.plusDays(1));
-        model.addAttribute("minTo", lastReservationDateInDatabase.plusDays(1));
 
         return "admin/management-panel";
     }
@@ -68,9 +67,8 @@ public class AdminController {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
         LocalDate firstDay = LocalDate.parse(request.getParameter("firstDay"), dateFormatter);
-        logger.info("FIRST DAY: " + firstDay);
         LocalDate lastDay = LocalDate.parse(request.getParameter("lastDay"), dateFormatter);
-        logger.info("LAST DAY: " + lastDay);
+
         LocalTime monToThuTimeFrom = LocalTime.parse(request.getParameter("monToThuTimeFrom"), timeFormatter);
         LocalTime friTimeFrom = LocalTime.parse(request.getParameter("friTimeFrom"), timeFormatter);
         LocalTime satTimeFrom = LocalTime.parse(request.getParameter("satTimeFrom"), timeFormatter);
@@ -79,13 +77,13 @@ public class AdminController {
         LocalTime friTimeTo = LocalTime.parse(request.getParameter("friTimeTo"), timeFormatter);
         LocalTime satTimeTo = LocalTime.parse(request.getParameter("satTimeTo"), timeFormatter);
         LocalTime sunTimeTo = LocalTime.parse(request.getParameter("sunTimeTo"), timeFormatter);
+
         long duration = Long.parseLong(request.getParameter("duration"));
+
         List<LocalDate> datesBetweenFirstAndLastDay = new ArrayList<>();
         for (int i = 0; i <= firstDay.until(lastDay, ChronoUnit.DAYS); i++) {
             datesBetweenFirstAndLastDay.add(firstDay.plusDays(i));
-            logger.info("LIST: " + firstDay.plusDays(i));
         }
-        datesBetweenFirstAndLastDay.stream().forEach(date -> logger.info("STREAM: " + date));
         List<TableToReserve> tables = tableToReserveRepository.findAll();
         datesBetweenFirstAndLastDay.stream().forEach(date -> {
             LocalDateTime dateTimeFrom;
@@ -176,11 +174,6 @@ public class AdminController {
         });
         return "redirect:/admin/management-panel";
     }
-
-//    @RequestMapping ("/reservations/list")
-//    public String showReservations(){
-//        return "admin/reservations-list";
-//    }
 
     public void countPrice(Reservation reservation, long duration) {
         if (reservation.getDate().getDayOfWeek().equals(DayOfWeek.FRIDAY)) {

@@ -42,7 +42,7 @@ public class HolidayWorkdaysController {
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String addHolidayWorkday(Model model, @Valid HolidayWorkday holidayWorkday, BindingResult result) {
+    public String addHolidayWorkday(@Valid HolidayWorkday holidayWorkday, BindingResult result) {
         if(result.hasErrors()){
             return "admin/holiday-workday-add";
         }

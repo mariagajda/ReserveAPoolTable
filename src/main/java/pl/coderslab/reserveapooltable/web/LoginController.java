@@ -24,8 +24,4 @@ public class LoginController {
         return "/logout";
     }
 
-    //    @RequestMapping("/user/log-failed")
-//    public String showUserLogFailedView(){
-//        return "user-log-failed";
-//    }
 }

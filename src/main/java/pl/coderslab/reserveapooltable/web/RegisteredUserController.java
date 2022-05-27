@@ -74,7 +74,6 @@ public class RegisteredUserController {
         try {
             RegisteredUser registered = registeredUserServiceImpl.registerNewUserAccount(registeredUserDTO);
         } catch (UserAlreadyExistException uaeEx) {
-//            mav.addObject("message", "An account for that username/email already exists.");
             return "/errors/registereduser-already-exist";
         }
         return "redirect:/login";

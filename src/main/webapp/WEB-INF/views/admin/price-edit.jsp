@@ -18,7 +18,6 @@
 <form:form modelAttribute="price" method="post">
     <label for="priceGroup">PriceGroup: ${price.priceGroup} </label>
     <form:hidden path="priceGroup" itemLabel="priceGroup"/>
-<%--    <form:errors path="priceGroup" cssClass="error"/>--%>
     <br/>
     <label for="isNightTime">Is it nighttime price: </label>
     <form:input path="isNightTime" itemLabel="isNightTime"/>
