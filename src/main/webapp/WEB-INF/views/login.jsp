@@ -1,7 +1,7 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <html>
 <head>
-<title>Log in</title>
+    <title>Log in</title>
 </head>
 <body>
 <%@include file="includes/appHeader.jsp" %>

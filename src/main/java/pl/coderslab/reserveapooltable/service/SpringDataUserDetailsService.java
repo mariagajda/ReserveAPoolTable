@@ -15,14 +15,16 @@ public class SpringDataUserDetailsService implements UserDetailsService {
     private RegisteredUserService registeredUserService;
 
     @Autowired
-    public void setRegisterUserRepository(RegisteredUserService registerUserService){
+    public void setRegisterUserRepository(RegisteredUserService registerUserService) {
         this.registeredUserService = registerUserService;
     }
 
-@Override
+    @Override
     public UserDetails loadUserByUsername(String username) {
         RegisteredUser user = registeredUserService.findRegisteredUserByUsername(username);
-        if (user == null) {throw new UsernameNotFoundException(username); }
+        if (user == null) {
+            throw new UsernameNotFoundException(username);
+        }
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
         user.getRoles().forEach(r ->
                 grantedAuthorities.add(new SimpleGrantedAuthority(r.getName())));

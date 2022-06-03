@@ -2,7 +2,7 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <html>
 <head>
-
+    <title>Reservation failed</title>
 </head>
 <body>
 <%@include file="includes/appHeader.jsp" %>
@@ -16,7 +16,7 @@
     You resign from your reservation.
 </c:if>
 
-<a href="/failed/deleteCookie">Homepage</a>
+<a href="/reservation/deleteCookie">Back to homepage</a>
 </body>
 </html>
 

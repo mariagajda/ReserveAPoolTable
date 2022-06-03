@@ -10,6 +10,8 @@ import java.lang.annotation.*;
 @Documented
 public @interface PasswordMatches {
     String message() default "{password.match.error}";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }

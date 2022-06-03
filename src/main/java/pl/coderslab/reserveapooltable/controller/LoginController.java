@@ -1,16 +1,13 @@
-package pl.coderslab.reserveapooltable.web;
+package pl.coderslab.reserveapooltable.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.util.WebUtils;
-
-import javax.servlet.http.Cookie;
 
 @Controller
 public class LoginController {
 
     @RequestMapping("/")
-    public String showHomepage(){
+    public String showHomepage() {
         return "homepage";
     }
 
@@ -20,8 +17,8 @@ public class LoginController {
     }
 
     @RequestMapping("/logout")
-    public String logOut(){
-        return "/logout";
+    public String logOut() {
+        return "logout";
     }
 
 }

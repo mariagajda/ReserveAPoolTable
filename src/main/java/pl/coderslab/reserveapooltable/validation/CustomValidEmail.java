@@ -11,6 +11,8 @@ import java.lang.annotation.*;
 @Documented
 public @interface CustomValidEmail {
     String message() default "{valid.email.error}";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }

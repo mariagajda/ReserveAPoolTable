@@ -1,4 +1,4 @@
-package pl.coderslab.reserveapooltable.web;
+package pl.coderslab.reserveapooltable.controller;
 
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -43,7 +43,7 @@ public class HolidayWorkdaysController {
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public String addHolidayWorkday(@Valid HolidayWorkday holidayWorkday, BindingResult result) {
-        if(result.hasErrors()){
+        if (result.hasErrors()) {
             return "admin/holiday-workday-add";
         }
         holidayWorkdaysRepository.save(holidayWorkday);

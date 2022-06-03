@@ -1,7 +1,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8"%>
 <html>
 <head>
     <title>Reserve a Service</title>
@@ -15,14 +15,14 @@
     <c:when test="${noReservations}">
         <p>We are sorry, but we don't have available hours and tables to reserve</p>
     </c:when>
-<c:otherwise>
-    <form method="post">
-        <label>Pick date
-            <input type="date" name="dateStr" min="${minDate}" max="${maxDate}"/>
-        </label>
-        <input type=submit value="Check availability"/>
-    </form>
-</c:otherwise>
+    <c:otherwise>
+        <form method="post">
+            <label>Pick date
+                <input type="date" name="dateStr" min="${minDate}" max="${maxDate}"/>
+            </label>
+            <input type=submit value="Check availability"/>
+        </form>
+    </c:otherwise>
 </c:choose>
 
 <sec:authorize access="hasRole('ADMIN')">

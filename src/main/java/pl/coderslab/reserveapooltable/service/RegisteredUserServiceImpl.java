@@ -36,12 +36,20 @@ public class RegisteredUserServiceImpl implements RegisteredUserService, Registe
 
     @Override
     public void saveRegisteredUser(RegisteredUser registeredUser) {
+        if (emailExist(registeredUser.getEmail())) {
+            throw new UserAlreadyExistException("There is an account with that email address: "
+                    + registeredUser.getEmail());
+        }
+        if (usernameExist(registeredUser.getUsername())) {
+            throw new UserAlreadyExistException("There is an account with that username address: "
+                    + registeredUser.getUsername());
+        }
         registeredUser.setPassword(passwordEncoder.encode(registeredUser.getPassword()));
         registeredUser.setUsername(registeredUser.getUsername());
         registeredUser.setEnabled(1);
         Optional<Set<Role>> roleOptional = Optional.ofNullable(registeredUser.getRoles());
         Role userRole = roleRepository.findByName("ROLE_USER");
-        if(roleOptional.equals(Optional.empty())) {
+        if (roleOptional.isEmpty()) {
             registeredUser.setRoles(new HashSet<>(Arrays.asList(userRole)));
         } else {
             Set<Role> roleSet = registeredUser.getRoles();
@@ -59,6 +67,10 @@ public class RegisteredUserServiceImpl implements RegisteredUserService, Registe
             throw new UserAlreadyExistException("There is an account with that email address: "
                     + registeredUserDTO.getEmail());
         }
+        if (usernameExist(registeredUserDTO.getUsername())) {
+            throw new UserAlreadyExistException("There is an account with that username address: "
+                    + registeredUserDTO.getUsername());
+        }
         RegisteredUser registeredUser = new RegisteredUser();
         registeredUser.setUsername(registeredUserDTO.getUsername());
         registeredUser.setPassword(passwordEncoder.encode(registeredUserDTO.getPassword()));
@@ -74,6 +86,10 @@ public class RegisteredUserServiceImpl implements RegisteredUserService, Registe
 
     private boolean emailExist(String email) {
         return registeredUserRepository.findUserByEmail(email) != null;
+    }
+
+    private boolean usernameExist(String username) {
+        return registeredUserRepository.findRegisteredUserByUsername(username) != null;
     }
 
 }

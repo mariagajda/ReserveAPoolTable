@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
     <title>Reserve a Service</title>
@@ -33,6 +33,7 @@
 </div>
 
 <sec:authorize access="isAuthenticated()">
+    <div>
         <p>Discount: <fmt:formatNumber value="${reservationsBasket.user.discount}" type="percent"/></p>
         <p>
             <c:choose>
@@ -40,7 +41,8 @@
                     Price: <span class="discount"><fmt:formatNumber value="${reservationsBasket.priceSum}" type="number"
                                                                     maxFractionDigits="2"
                                                                     minFractionDigits="2"/></span> /<fmt:formatNumber
-                        value="${reservationsBasket.priceSum*(1-reservationsBasket.user.discount)}" type="number" maxFractionDigits="2"
+                        value="${reservationsBasket.priceSum*(1-reservationsBasket.user.discount)}" type="number"
+                        maxFractionDigits="2"
                         minFractionDigits="2"/> PLN
                 </c:when>
                 <c:otherwise>
@@ -50,8 +52,8 @@
             </c:choose>
         </p>
 
-        </div>
-        <div>
+    </div>
+    <div>
         <form action="/reservation/payment" method="get">
             <label>Payment method:
                 <select name="paymentMethod">
@@ -61,43 +63,41 @@
             </label><br/>
             <input type="submit" value="Make a reservation"/>
         </form>
-        </div>
+    </div>
 </sec:authorize>
 <sec:authorize access="isAnonymous()">
-        <p>Price: <fmt:formatNumber value="${reservationsBasket.priceSum}" type="number" maxFractionDigits="2" minFractionDigits="2"/>
-            PLN</p>
+    <p>Price: <fmt:formatNumber value="${reservationsBasket.priceSum}" type="number" maxFractionDigits="2"
+                                minFractionDigits="2"/>
+        PLN</p>
 
-        <div><h4>Fill a form:</h4>
-                <%--@elvariable id="user" type="pl.coderslab.reserveapooltable.entity.User"--%>
-            <form:form action="/user/add" modelAttribute="user" method="post">
-                <label>Username:
-                    <form:input path="username"/>
-                    <form:errors path="username" cssClass="error"/>
-                </label><br/><label>Email:
-                    <form:input path="email"/>
-                    <form:errors path="email" cssClass="error"/>
-                </label><br/>
-                <label>Phone number:
-                    <form:input path="phoneNumber"/>
-                    <form:errors path="phoneNumber" cssClass="error"/>
-                </label><br/>
-                <label>Payment method:
-                    <select name="paymentMethod">
-                        <option value="transfer">Online payment</option>
-                        <option value="inPlace">Pay in place</option>
-                    </select>
-                </label>
-                <c:forEach items="${reservationsBasket.reservations}" var="reservation">
-                    <input type="hidden" name="reservationsIdList" value="${reservation.id}"/>
-                </c:forEach>
-                <label>
-                    <form:checkbox path="usageAcceptance"/>
-                    <form:errors path="usageAcceptance" cssClass="error"/>
-                    I accept the Terms of Use and Privacy Policy
-                </label><br/>
-                <input type="submit" value="Make a reservation"/>
-            </form:form>
-        </div>
+    <div><h4>Fill a form:</h4>
+            <%--@elvariable id="user" type="pl.coderslab.reserveapooltable.entity.User"--%>
+        <form:form action="/user/add" modelAttribute="user" method="post">
+            <label>Email:
+                <form:input path="email"/>
+                <form:errors path="email" cssClass="error"/>
+            </label><br/>
+            <label>Phone number:
+                <form:input path="phoneNumber"/>
+                <form:errors path="phoneNumber" cssClass="error"/>
+            </label><br/>
+            <label>Payment method:
+                <select name="paymentMethod">
+                    <option value="transfer">Online payment</option>
+                    <option value="inPlace">Pay in place</option>
+                </select>
+            </label>
+            <c:forEach items="${reservationsBasket.reservations}" var="reservation">
+                <input type="hidden" name="reservationsIdList" value="${reservation.id}"/>
+            </c:forEach>
+            <label>
+                <form:checkbox path="usageAcceptance"/>
+                <form:errors path="usageAcceptance" cssClass="error"/>
+                I accept the Terms of Use and Privacy Policy
+            </label><br/>
+            <input type="submit" value="Make a reservation"/>
+        </form:form>
+    </div>
 </sec:authorize>
 
 </body>

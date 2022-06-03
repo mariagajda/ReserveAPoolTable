@@ -1,9 +1,8 @@
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <html>
 <head>
-
+    <title>Log failed</title>
 </head>
 <body>
 <%@include file="includes/appHeader.jsp" %>

@@ -18,6 +18,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         http
+                .cors().disable()
                 .authorizeRequests().antMatchers("/static/**", "/resources/**", "/resources/static/**").permitAll();
         http
                 .csrf().disable()
@@ -25,7 +26,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/holiday-workdays/**").hasRole("ADMIN")
                 .antMatchers("/price/**").hasRole("ADMIN")
-//
+
                 .and()
                 .formLogin()
                 .loginPage("/login")
@@ -35,7 +36,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                 .logoutSuccessUrl("/")
                 .deleteCookies("JSESSIONID", "basketId")
-                .and().exceptionHandling().accessDeniedPage("/errors/403");
+                .and().exceptionHandling().accessDeniedPage("/errors/403")
+                ;
 
     }
 

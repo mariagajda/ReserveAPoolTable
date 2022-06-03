@@ -1,7 +1,5 @@
-package pl.coderslab.reserveapooltable.web;
+package pl.coderslab.reserveapooltable.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,7 +10,6 @@ import pl.coderslab.reserveapooltable.DTO.RegisteredUserDTO;
 import pl.coderslab.reserveapooltable.entity.RegisteredUser;
 import pl.coderslab.reserveapooltable.entity.Role;
 import pl.coderslab.reserveapooltable.errors.UserAlreadyExistException;
-import pl.coderslab.reserveapooltable.repository.RegisteredUserRepository;
 import pl.coderslab.reserveapooltable.repository.RoleRepository;
 import pl.coderslab.reserveapooltable.service.RegisteredUserService;
 import pl.coderslab.reserveapooltable.service.RegisteredUserServiceImpl;
@@ -24,22 +21,19 @@ import java.util.Set;
 
 @Controller
 public class RegisteredUserController {
-    private static final Logger logger = LoggerFactory.getLogger(RegisteredUserController.class);
     private final RegisteredUserServiceImpl registeredUserServiceImpl;
-    private final RegisteredUserRepository registeredUserRepository;
     private final RegisteredUserService registeredUserService;
     private final RoleRepository roleRepository;
 
-    public RegisteredUserController(RegisteredUserServiceImpl registeredUserServiceImpl, RegisteredUserRepository registeredUserRepository, RoleRepository roleRepository, RegisteredUserService registeredUserService) {
+    public RegisteredUserController(RegisteredUserServiceImpl registeredUserServiceImpl, RoleRepository roleRepository, RegisteredUserService registeredUserService) {
         this.registeredUserServiceImpl = registeredUserServiceImpl;
-        this.registeredUserRepository = registeredUserRepository;
         this.roleRepository = roleRepository;
         this.registeredUserService = registeredUserService;
     }
 
-    @RequestMapping("/create")
+    @RequestMapping("/create-admin")
     @ResponseBody
-    public String createRegisteredUser() {
+    public String createAdmin() {
         RegisteredUser registeredUser = new RegisteredUser();
         registeredUser.setUsername("admin");
         registeredUser.setPassword("Admin123!");
@@ -53,11 +47,8 @@ public class RegisteredUserController {
         registeredUser.setRoles(rolesSet);
 
         registeredUserService.saveRegisteredUser(registeredUser);
-        for(Role r : registeredUser.getRoles()){
-            logger.info("REGISTERED USER ROLES: " + r.toString());
-        }
 
-        return "admin";
+        return "admin created";
     }
 
     @RequestMapping("/user/register")
