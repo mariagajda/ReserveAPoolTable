@@ -7,7 +7,7 @@
     <html>
     <head>
         <title>Admin Panel</title>
-
+        <link rel="stylesheet" href="<c:url value="/resources/css/appCss.css"/>"/>
     </head>
     <body>
     <%@include file="../includes/appHeader.jsp" %>
@@ -32,48 +32,49 @@
                     <form:input type="date" path="firstDay" value="${firstReservationDate}" min="${minFrom}"/>
 
 
-                    <form:errors path="firstDay"/></label>
+                    <form:errors path="firstDay"  cssClass="error"/></label>
                 <label>to:
                     <form:input type="date" path="lastDay" value="${firstReservationDate}" min="${minFrom}"/>
 
-                    <form:errors path="lastDay"/></label><br/>
+                    <form:errors path="lastDay" cssClass="error"/></label><br/>
                 <label>Minimal duration of reservation:
                     <form:input type="number" path="duration" value="30"/>
-                    <form:errors path="duration"/>
+                    <form:errors path="duration" cssClass="error"/>
                     min
                 </label>
                 <h4>Openings hours for new period:</h4>
                 <p>Monday - Thursday
                     <label>From:
                         <form:input type="time" path="monToThuTimeFrom" value="15:00"/>
-                        <form:errors path="monToThuTimeFrom"/>
+                        <form:errors path="monToThuTimeFrom" cssClass="error"/>
                     </label>
                     <label> To:
                         <form:input type="time" path="monToThuTimeTo" value="01:00"/>
+                        <form:errors path="monToThuTimeTo" cssClass="error"/>
                     </label></p>
                 <p>Friday <label>From:
                     <form:input type="time" path="friTimeFrom" value="15:00"/>
-                    <form:errors path="friTimeFrom"/>
+                    <form:errors path="friTimeFrom"  cssClass="error"/>
                 </label>
                     <label> To:
                         <form:input type="time" path="friTimeTo" value="02:00"/>
-                        <form:errors path="friTimeTo"/>
+                        <form:errors path="friTimeTo" cssClass="error"/>
                     </label></p>
                 <p>Saturday <label>From:
                     <form:input type="time" path="satTimeFrom" value="15:00"/>
-                    <form:errors path="satTimeFrom"/>
+                    <form:errors path="satTimeFrom" cssClass="error"/>
                 </label>
                     <label> To:
                         <form:input type="time" path="satTimeTo" value="02:00"/>
-                        <form:errors path="satTimeTo"/>
+                        <form:errors path="satTimeTo" cssClass="error"/>
                     </label></p>
                 <p>Sunday & holidays <label>From:
                     <form:input type="time" path="sunTimeFrom" value="15:00"/>
-                    <form:errors path="sunTimeFrom"/>
+                    <form:errors path="sunTimeFrom" cssClass="error"/>
                 </label>
                     <label>To:
                         <form:input type="time" path="sunTimeTo" value="00:00"/>
-                        <form:errors path="sunTimeTo"/>
+                        <form:errors path="sunTimeTo" cssClass="error"/>
                     </label></p>
                 <input type="submit" value="Add reservations">
             </form:form>

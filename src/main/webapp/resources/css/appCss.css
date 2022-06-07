@@ -1,0 +1,33 @@
+
+.availableClass{
+    background-color: lightgreen;
+    width: 70px;
+}
+
+.unavailableClass{
+    background-color: indianred;
+    width: 70px;
+}
+
+.currentChoiceClass{
+    background-color: yellow;
+    width: 70px;
+}
+
+.error{
+    color: red;
+}
+
+.discount{
+    color: red;
+    text-decoration: line-through;
+}
+
+.body {
+    background-color: lightgreen;
+}
+
+.body.yellow {
+    background-color: yellow;
+}
+

@@ -4,11 +4,7 @@
 <html>
 <head>
     <title>Registration form</title>
-    <style>
-        .error {
-            color: red;
-        }
-    </style>
+    <link rel="stylesheet" href="<c:url value="/resources/css/appCss.css"/>">
 </head>
 <body>
 <%@include file="includes/appHeader.jsp" %>

@@ -19,7 +19,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(final HttpSecurity http) throws Exception {
         http
                 .cors().disable()
-                .authorizeRequests().antMatchers("/static/**", "/resources/**", "/resources/static/**").permitAll();
+                .authorizeRequests().antMatchers("/images/**", "/js/**").permitAll();
         http
                 .csrf().disable()
                 .authorizeRequests()

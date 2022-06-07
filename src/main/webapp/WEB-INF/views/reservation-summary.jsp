@@ -6,17 +6,7 @@
 <html>
 <head>
     <title>Reserve a Service</title>
-    <style>
-        .error {
-            color: red;
-        }
-    </style>
-    <style>
-        .discount {
-            color: red;
-            text-decoration: line-through;
-        }
-    </style>
+    <link rel="stylesheet" href="<c:url value="/resources/css/appCss.css"/>">
 </head>
 <body>
 <%@include file="includes/appHeader.jsp" %>
