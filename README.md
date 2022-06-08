@@ -1,29 +1,28 @@
 # ReserveAPoolTable Application
 
-Celem projektu jest stworzenie aplikacji webowej służącej do rezerwacji stołów przeznaczonej dla klubów bilardowych
+This is the web application created for billard clubs as a pool tables reservation system.
 
 
-## W projekcie zostały wykorzystane następujące technologie:
-
+## This project contains following technologies:
 * Spring Boot,
 * Spring Security,
 * Hibernate,
 * SQL,
 * JSP
 
-## W projekcie zostały zaprojektowane następujące finkcjonalności:
-### Od strony użytkownika:
-* rejestracja użytkownika,
-* logowanie,
-* możliwość dokonania rezerwacji dla niezarejestrowanego użytkownika
-* zniżka dla stałych klientów
+## This project contains following functionalities:
+### From the user side:
+* user registration,
+* user access logging,
+* possibility to make a reservation by unregistered user,
+* discount for regular customers,
 
-### Od strony dokonywania rezerwacji:
-* sprawdzenie dostępnych godzin i stołów dla wybranego dnia,
-* rezerwacja dostępnych terminów,
-* możliwość płatności online lub na miejscu
+### From the reservation side:
+* checking available hours and tables for a chosen date,
+* making reservation for customer choice,
+* possibility to pay online or just before play in club,
 
-### Od strony administratora:
-* dodawanie dostępnych rezerwacji dla wskazanego terminu, z uwzględnieniem aktualnie ustawionych cen i dni świątecznych-pracujących,
-* podgląd i edycja ceny rezerwacji za godzinę w zależności od grupy cenowej,
-* podgląd i edycja dni świątecznych, w które klub jest otwarty
+### From the admin side:
+* current prices preview and edition,
+* setting holiday workdays,  
+* adding available reservations terms, taking into account prices and holiday workdays,
