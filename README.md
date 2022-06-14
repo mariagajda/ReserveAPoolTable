@@ -1,6 +1,6 @@
 # ReserveAPoolTable Application
 
-This is the web application created for billard clubs as a pool tables reservation system.
+This is the web application created for billiards clubs as a pool tables reservation system.
 
 
 ## This project contains following technologies:
