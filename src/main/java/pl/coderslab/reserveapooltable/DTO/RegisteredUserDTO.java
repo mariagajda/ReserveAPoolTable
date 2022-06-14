@@ -1,6 +1,7 @@
 package pl.coderslab.reserveapooltable.DTO;
 
 
+import org.springframework.stereotype.Component;
 import pl.coderslab.reserveapooltable.validation.CustomValidEmail;
 import pl.coderslab.reserveapooltable.validation.PasswordMatches;
 

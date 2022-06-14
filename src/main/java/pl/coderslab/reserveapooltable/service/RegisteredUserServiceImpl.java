@@ -3,6 +3,7 @@ package pl.coderslab.reserveapooltable.service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.coderslab.reserveapooltable.DTO.RegisteredUserDTO;
+import pl.coderslab.reserveapooltable.DTO.RegisteredUserDTOMapper;
 import pl.coderslab.reserveapooltable.entity.RegisteredUser;
 import pl.coderslab.reserveapooltable.entity.Role;
 import pl.coderslab.reserveapooltable.errors.UserAlreadyExistException;
@@ -21,12 +22,14 @@ public class RegisteredUserServiceImpl implements RegisteredUserService, Registe
     private final RegisteredUserRepository registeredUserRepository;
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final RegisteredUserDTOMapper registeredUserDTOMapper;
 
     public RegisteredUserServiceImpl(RegisteredUserRepository registeredUserRepository, RoleRepository roleRepository,
-                                     BCryptPasswordEncoder passwordEncoder) {
+                                     BCryptPasswordEncoder passwordEncoder, RegisteredUserDTOMapper registeredUserDTOMapper) {
         this.passwordEncoder = passwordEncoder;
         this.registeredUserRepository = registeredUserRepository;
         this.roleRepository = roleRepository;
+        this.registeredUserDTOMapper = registeredUserDTOMapper;
     }
 
     @Override
@@ -71,12 +74,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService, Registe
             throw new UserAlreadyExistException("There is an account with that username address: "
                     + registeredUserDTO.getUsername());
         }
-        RegisteredUser registeredUser = new RegisteredUser();
-        registeredUser.setUsername(registeredUserDTO.getUsername());
-        registeredUser.setPassword(passwordEncoder.encode(registeredUserDTO.getPassword()));
-        registeredUser.setEmail(registeredUserDTO.getEmail());
-        registeredUser.setPhoneNumber(registeredUserDTO.getPhoneNumber());
-        registeredUser.setUsageAcceptance(registeredUserDTO.isUsageAcceptance());
+        RegisteredUser registeredUser = registeredUserDTOMapper.toRegisteredUser(registeredUserDTO);
         registeredUser.setEnabled(1);
         Role userRole = roleRepository.findByName("ROLE_USER");
         registeredUser.setRoles(new HashSet<>(Arrays.asList(userRole)));
