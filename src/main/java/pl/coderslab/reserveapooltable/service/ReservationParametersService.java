@@ -1,5 +1,6 @@
 package pl.coderslab.reserveapooltable.service;
 
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import pl.coderslab.reserveapooltable.entity.HolidayWorkday;
 import pl.coderslab.reserveapooltable.entity.Reservation;
@@ -24,33 +25,13 @@ public class ReservationParametersService {
     private final PriceRepository priceRepository;
     private final HolidayWorkdaysRepository holidayWorkdaysRepository;
     private final ReservationRepository reservationRepository;
-    private final TableToReserveRepository tableToReserveRepository;
 
-    public ReservationParametersService(PriceRepository priceRepository, HolidayWorkdaysRepository holidayWorkdaysRepository, ReservationRepository reservationRepository, TableToReserveRepository tableToReserveRepository) {
+    public ReservationParametersService(PriceRepository priceRepository, HolidayWorkdaysRepository holidayWorkdaysRepository, ReservationRepository reservationRepository) {
         this.priceRepository = priceRepository;
         this.holidayWorkdaysRepository = holidayWorkdaysRepository;
         this.reservationRepository = reservationRepository;
-        this.tableToReserveRepository = tableToReserveRepository;
     }
 
-    public void addReservationsForPeriod(LocalDate firstDay, LocalDate lastDay, LocalTime monToThuTimeFrom, LocalTime friTimeFrom, LocalTime satTimeFrom, LocalTime sunTimeFrom, LocalTime monToThuTimeTo, LocalTime friTimeTo, LocalTime satTimeTo, LocalTime sunTimeTo, long duration) {
-        List<LocalDate> datesBetweenFirstAndLastDay = new ArrayList<>();
-        for (int i = 0; i <= firstDay.until(lastDay, ChronoUnit.DAYS); i++) {
-            datesBetweenFirstAndLastDay.add(firstDay.plusDays(i));
-        }
-        List<TableToReserve> tables = tableToReserveRepository.findAll();
-        datesBetweenFirstAndLastDay.forEach(date -> {
-            if (date.getDayOfWeek().equals(DayOfWeek.FRIDAY)) {
-                setReservationParameters(friTimeTo, friTimeFrom, tables, duration, date);
-            } else if (date.getDayOfWeek().equals(DayOfWeek.SATURDAY)) {
-                setReservationParameters(satTimeTo, satTimeFrom, tables, duration, date);
-            } else if (date.getDayOfWeek().equals(DayOfWeek.SUNDAY) || holidayWorkdaysRepository.findAll().stream().map(HolidayWorkday::getDate).collect(Collectors.toList()).contains(date)) {
-                setReservationParameters(sunTimeTo, sunTimeFrom, tables, duration, date);
-            } else {
-                setReservationParameters(monToThuTimeTo, monToThuTimeFrom, tables, duration, date);
-            }
-        });
-    }
 
     public void countPrice(Reservation reservation, long duration) {
         if (reservation.getDate().getDayOfWeek().equals(DayOfWeek.FRIDAY)) {
@@ -80,7 +61,27 @@ public class ReservationParametersService {
         }
     }
 
-    public void setReservationParameters(LocalTime timeTo, LocalTime timeFrom, List<TableToReserve> tables, long duration, LocalDate date) {
+    @Async
+    public void addReservationsForPeriod(LocalDate firstDay, LocalDate lastDay, LocalTime monToThuTimeFrom, LocalTime friTimeFrom, LocalTime satTimeFrom, LocalTime sunTimeFrom, LocalTime monToThuTimeTo, LocalTime friTimeTo, LocalTime satTimeTo, LocalTime sunTimeTo, long duration, TableToReserve table) {
+        List<LocalDate> datesBetweenFirstAndLastDay = new ArrayList<>();
+        for (int i = 0; i <= firstDay.until(lastDay, ChronoUnit.DAYS); i++) {
+            datesBetweenFirstAndLastDay.add(firstDay.plusDays(i));
+        }
+
+        datesBetweenFirstAndLastDay.forEach(date -> {
+            if (date.getDayOfWeek().equals(DayOfWeek.FRIDAY)) {
+                setReservationParameters(friTimeTo, friTimeFrom, table, duration, date);
+            } else if (date.getDayOfWeek().equals(DayOfWeek.SATURDAY)) {
+                setReservationParameters(satTimeTo, satTimeFrom, table, duration, date);
+            } else if (date.getDayOfWeek().equals(DayOfWeek.SUNDAY) || holidayWorkdaysRepository.findAll().stream().map(HolidayWorkday::getDate).collect(Collectors.toList()).contains(date)) {
+                setReservationParameters(sunTimeTo, sunTimeFrom, table, duration, date);
+            } else {
+                setReservationParameters(monToThuTimeTo, monToThuTimeFrom, table, duration, date);
+            }
+        });
+    }
+
+    public void setReservationParameters(LocalTime timeTo, LocalTime timeFrom, TableToReserve table, long duration, LocalDate date) {
         LocalDateTime dateTimeFrom;
         LocalDateTime dateTimeTo;
         if (timeTo.getHour() > timeFrom.getHour()) {
@@ -95,12 +96,13 @@ public class ReservationParametersService {
 
         for (int i = 0; i < numberOfReservationsPerDay; i++) {
 
-            for (TableToReserve table : tables) {
-                Reservation reservation = new Reservation(date, dateTimeFrom, dateTimeFrom.plusMinutes(duration), PriceGroup.FRI, table);
-                countPrice(reservation, duration);
-                reservationRepository.save(reservation);
-            }
+
+            Reservation reservation = new Reservation(date, dateTimeFrom, dateTimeFrom.plusMinutes(duration), table);
+            countPrice(reservation, duration);
+            reservationRepository.save(reservation);
+
             dateTimeFrom = dateTimeFrom.plusMinutes(duration);
         }
     }
+
 }

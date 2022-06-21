@@ -33,11 +33,10 @@ public class Reservation {
     public Reservation() {
     }
 
-    public Reservation(LocalDate date, LocalDateTime startDateTime, LocalDateTime endDateTime, PriceGroup priceGroup, TableToReserve table) {
+    public Reservation(LocalDate date, LocalDateTime startDateTime, LocalDateTime endDateTime, TableToReserve table) {
         this.date = date;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
-        this.priceGroup = priceGroup;
         isAvailable = true;
         this.table = table;
     }

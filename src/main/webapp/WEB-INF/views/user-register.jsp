@@ -10,7 +10,7 @@
 <%@include file="includes/appHeader.jsp" %>
 
 <h1>Registration form</h1>
-<%--@elvariable id="registeredUserDTO" type="pl.coderslab.reserveapooltable.entity.RegisteredUserDTO"--%>
+<%--@elvariable id="registeredUserDTO" type="pl.coderslab.reserveapooltable.DTO.RegisteredUserDTO"--%>
 <form:form action="/user/register" modelAttribute="registeredUserDTO" method="post">
     <form:errors cssClass="error"/><br/>
     <label>Name:
