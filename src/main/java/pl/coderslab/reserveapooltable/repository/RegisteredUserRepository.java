@@ -9,4 +9,6 @@ public interface RegisteredUserRepository extends JpaRepository<RegisteredUser, 
     RegisteredUser findUserByEmail(String email);
 
     RegisteredUser findRegisteredUserByUsername(String username);
+
+
 }

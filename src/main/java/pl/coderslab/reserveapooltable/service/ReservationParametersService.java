@@ -9,7 +9,6 @@ import pl.coderslab.reserveapooltable.enums.PriceGroup;
 import pl.coderslab.reserveapooltable.repository.HolidayWorkdaysRepository;
 import pl.coderslab.reserveapooltable.repository.PriceRepository;
 import pl.coderslab.reserveapooltable.repository.ReservationRepository;
-import pl.coderslab.reserveapooltable.repository.TableToReserveRepository;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;

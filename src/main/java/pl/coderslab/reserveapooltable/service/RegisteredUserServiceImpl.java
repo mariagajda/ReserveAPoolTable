@@ -65,6 +65,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService, Registe
         registeredUserRepository.save(registeredUser);
     }
 
+    @Override
     public RegisteredUser registerNewUserAccount(RegisteredUserDTO registeredUserDTO) throws UserAlreadyExistException {
         if (emailExist(registeredUserDTO.getEmail())) {
             throw new UserAlreadyExistException("There is an account with that email address: "
@@ -74,7 +75,8 @@ public class RegisteredUserServiceImpl implements RegisteredUserService, Registe
             throw new UserAlreadyExistException("There is an account with that username address: "
                     + registeredUserDTO.getUsername());
         }
-        RegisteredUser registeredUser = registeredUserDTOMapper.toRegisteredUser(registeredUserDTO);
+        RegisteredUser registeredUser = registeredUserDTOMapper
+                .toRegisteredUser(registeredUserDTO);
         registeredUser.setEnabled(1);
         Role userRole = roleRepository.findByName("ROLE_USER");
         registeredUser.setRoles(new HashSet<>(Arrays.asList(userRole)));
@@ -83,11 +85,13 @@ public class RegisteredUserServiceImpl implements RegisteredUserService, Registe
     }
 
     private boolean emailExist(String email) {
-        return registeredUserRepository.findUserByEmail(email) != null;
+        return registeredUserRepository
+                .findUserByEmail(email) != null;
     }
 
     private boolean usernameExist(String username) {
-        return registeredUserRepository.findRegisteredUserByUsername(username) != null;
+        return registeredUserRepository
+                .findRegisteredUserByUsername(username) != null;
     }
 
 }
